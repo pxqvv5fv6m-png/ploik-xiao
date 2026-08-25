@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0f0c29">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="彩票转盘">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>🎰 彩票转盘</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:#0f0c29}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff;background:linear-gradient(165deg,#0f0c29,#302b63 52%,#24243e);padding:10px;padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(28px,env(safe-area-inset-bottom))}
+.container{max-width:430px;margin:auto}h1{text-align:center;font-size:18px;margin:4px 0 10px}
+.tabs,.mode-row,.btn-row,.grid2{display:flex;gap:8px}.grid2{display:grid;grid-template-columns:1fr 1fr}
+button{border:0;border-radius:11px;padding:11px 8px;font-size:14px;font-weight:650;cursor:pointer}
+button:disabled{opacity:.42}.tab,.mode{flex:1;background:#ffffff14;color:#bbb}.active{background:linear-gradient(135deg,#e94560,#ff6b6b)!important;color:#fff!important}
+.mode-row{margin:9px 0}.mode{font-size:12px;padding:8px}
+.info{text-align:center;font-size:12px;color:#aaa;margin:7px 0}
+.wheel-box{position:relative;width:300px;height:300px;margin:0 auto 10px}
+.pointer-outer{position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:26px solid #ffd700;z-index:60;filter:drop-shadow(0 2px 3px #000)}
+.pointer-inner{position:absolute;top:58px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:18px solid #00e5ff;z-index:55;filter:drop-shadow(0 2px 3px #000)}
+.outer-wheel{position:absolute;inset:0;width:300px;height:300px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 3px #e94560,0 6px 20px #0006;background:#1a1a2e;overflow:hidden}
+.inner-wheel{position:absolute;top:70px;left:70px;width:160px;height:160px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 3px #4cc9f0,0 4px 15px #0006;background:#16213e;overflow:hidden;z-index:10}
+.num{position:absolute;top:50%;left:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.outer-wheel .num{width:26px;height:26px;margin:-13px;border-radius:50%;background:#e94560;color:#fff}
+.inner-wheel .num{width:24px;height:24px;margin:-12px;border-radius:50%;background:#4cc9f0;color:#0f0c29}
+.center-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#fff;border:2px solid #333;color:#333;z-index:20;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.balls{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:38px;margin-bottom:4px}
+.ball{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.red{background:linear-gradient(135deg,#e94560,#ff6b6b)}.blue{background:linear-gradient(135deg,#0f3460,#4cc9f0)}
+.status{text-align:center;font-size:13px;color:#ffd700;min-height:20px;margin:8px 0}
+.spin-btn{flex:1;background:linear-gradient(135deg,#e94560,#ff6b6b);color:#fff}.copy-btn{flex:1;background:linear-gradient(135deg,#4cc9f0,#4895ef);color:#0f0c29}.clear-btn{flex:.7;background:#ffffff1f;color:#ccc}
+.box{background:#0004;border-radius:12px;padding:10px;margin:10px 0}.box-title{font-size:12px;color:#aaa;margin-bottom:7px;display:flex;justify-content:space-between}.gold{color:#ffd700}
+input,select{width:100%;border:1px solid #ffffff25;background:#0d0b20;color:#fff;border-radius:10px;padding:10px 11px;font-size:14px;outline:none;margin:4px 0}
+select{appearance:auto}
+.small-btn{padding:6px 8px;font-size:11px;background:#ffffff18;color:#ddd}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.stat-card{background:#0004;border-radius:10px;padding:9px;text-align:center}
+.stat-card .label{font-size:10px;color:#999}
+.stat-card .value{font-size:17px;font-weight:800;margin-top:3px}
+.search-result{font-size:12px;color:#ccc;line-height:1.7;margin-top:7px}
+.history-item,.fav-item{font-size:11px;padding:6px 2px;border-bottom:1px solid #ffffff0d;display:flex;gap:5px;align-items:center}.history-text{flex:1}.fav{color:#ffd700}
+.small-btn{padding:5px 7px;border-radius:7px;background:#ffffff14;color:#ccc;font-size:11px}
+input{width:100%;padding:9px 10px;border-radius:8px;border:1px solid #ffffff33;background:#0005;color:#fff;font-size:13px;margin-bottom:7px}
+.action{background:#ffd700;color:#333;width:100%;padding:9px}.ghost{background:#ffffff12;color:#ccc}
+.result{margin-top:8px;font-size:12px;line-height:1.65}.hit{color:#ffd700;font-weight:800;background:#ffd70033;padding:0 3px;border-radius:3px}
+.stats-modal{position:fixed;inset:0;background:#0009;z-index:9999;display:none;align-items:flex-end;justify-content:center;padding:10px}.stats-modal.show{display:flex}.stats-panel{width:min(430px,100%);max-height:82vh;overflow:auto;background:linear-gradient(165deg,#15112f,#302b63);border:1px solid #ffffff20;border-radius:16px;padding:14px;box-shadow:0 10px 40px #0008}.stats-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.stats-head b{color:#ffd700}.chart-row{display:grid;grid-template-columns:55px 1fr 82px;gap:7px;align-items:center;margin:10px 0;font-size:11px}.chart-track{height:16px;background:#ffffff12;border-radius:9px;overflow:hidden}.chart-bar{height:100%;border-radius:9px;background:linear-gradient(90deg,#e94560,#ffd700);min-width:2px}.chart-num{text-align:right;color:#ddd;line-height:1.5}.hidden{display:none!important}.tip{text-align:center;color:#666;font-size:10px;margin-top:8px;line-height:1.5}
+.section-btn{width:100%;margin-top:7px}.danger{background:#7f2940;color:#fff}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎰 彩票转盘</h1>
+
+<div class="tabs">
+<button class="tab active" id="tab-ssq" onclick="switchType('ssq')">双色球</button>
+<button class="tab" id="tab-dlt" onclick="switchType('dlt')">大乐透</button>
+</div>
+
+<div class="mode-row">
+<button class="mode active" id="mode-wheel" onclick="setMode('wheel')">🎡 转盘</button>
+<button class="mode" id="mode-manual" onclick="setMode('manual')">✍️ 手动</button>
+<button class="mode" id="mode-batch" onclick="setMode('batch')">🎲 批量</button>
+</div>
+
+<section id="wheelMode">
+<div class="info" id="infoText"></div>
+<div class="wheel-box">
+<div class="pointer-outer"></div><div class="pointer-inner"></div>
+<div class="outer-wheel" id="outerWheel"></div>
+<div class="inner-wheel" id="innerWheel"><div class="center-dot">中</div></div>
+</div>
+<div class="info">已选前区</div><div class="balls" id="frontBalls"></div>
+<div class="info">已选后区</div><div class="balls" id="backBalls"></div>
+<div class="status" id="statusText">点击开始转盘</div>
+<div class="btn-row">
+<button class="spin-btn" id="spinBtn" onclick="doSpin()">开始转盘</button>
+<button class="copy-btn" onclick="copyCurrent()">复制</button>
+<button class="clear-btn" onclick="resetCurrent()">重置</button>
+</div>
+</section>
+
+<section id="manualMode" class="hidden">
+<div class="box">
+<div class="box-title"><span>✍️ 手动输入号码</span><span>输入后自动加空格</span></div>
+<div class="tip" style="margin-bottom:8px">直接输入数字即可，例如双色球输入 031218222731，自动变成 03 12 18 22 27 31；大乐透后区输入 0709，自动变成 07 09。</div>
+<label style="display:block;font-size:12px;color:#aaa;margin:2px 0 5px">前区</label>
+<input id="manualFront" type="text" inputmode="text" autocomplete="off" placeholder="双色球：03 12 18 22 27 31 / 大乐透：01 08 15 22 35" oninput="formatManual(this,'front')">
+<label style="display:block;font-size:12px;color:#aaa;margin:2px 0 5px">后区</label>
+<input id="manualBack" type="text" inputmode="text" autocomplete="off" placeholder="双色球：07 / 大乐透：07 09" oninput="formatManual(this,'back')">
+<button class="action" onclick="saveManual()">💾 保存这组号码</button>
+<button class="ghost section-btn" onclick="clearManual()">清空重新输入</button>
+<div class="result" id="manualResult"></div>
+</div>
+</section>
+
+<section id="batchMode" class="hidden">
+<div class="box">
+<div class="box-title"><span>批量随机选号</span><span>每组号码不重复</span></div>
+<div class="grid2">
+<button class="action" onclick="batch(1)">生成 1 组</button>
+<button class="action" onclick="batch(5)">生成 5 组</button>
+<button class="action" onclick="batch(10)">生成 10 组</button>
+<button class="action" onclick="batch(20)">生成 20 组</button>
+<button class="action" onclick="batch(50)">生成 50 组</button>
+<button class="action" onclick="batch(100)">生成 100 组</button>
+</div>
+</div>
+<div class="box"><div class="box-title"><span>本次批量结果</span><button class="small-btn" onclick="copyBatch()">复制全部</button></div><div id="batchList">暂无结果</div></div>
+</section>
+
+<div class="box">
+<div class="box-title gold"><span>💰 今日账本</span><span id="todayDate"></span></div>
+<div class="grid2" style="margin-bottom:8px">
+  <div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
+    <div style="font-size:11px;color:#aaa">今日花费</div>
+    <div id="todaySpend" style="font-size:17px;font-weight:800;color:#ff8fa3;margin-top:3px">¥0</div>
+  </div>
+  <div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
+    <div style="font-size:11px;color:#aaa">今日赚取</div>
+    <div id="todayWin" style="font-size:17px;font-weight:800;color:#ffd700;margin-top:3px">¥0</div>
+  </div>
+</div>
+<div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
+  <div style="font-size:11px;color:#aaa">今日盈亏</div>
+  <div id="todayProfit" style="font-size:18px;font-weight:900;color:#fff;margin-top:3px">¥0</div>
+</div>
+<div class="tip" style="margin-top:7px">每组默认按 ¥2 计算；验证中奖后可填写实际中奖金额。</div>
+</div>
+
+<div class="box">
+<div class="box-title"><span>📜 记录</span><span id="historyCount">0 组</span></div>
+<div class="grid2">
+  <select id="historyRange" onchange="renderHistory()">
+    <option value="today">今天</option>
+    <option value="yesterday">昨天</option>
+    <option value="7d">近7天</option>
+    <option value="month">本月</option>
+    <option value="all">全部</option>
+  </select>
+  <input id="historySearch" type="text" inputmode="numeric" autocomplete="off" placeholder="搜索号码" oninput="renderHistory()">
+</div>
+<div class="btn-row" style="margin-top:5px">
+  <button class="ghost" onclick="copyFilteredHistory()">📋复制当前列表</button>
+  <button class="ghost" onclick="showStats()">📊统计</button>
+</div>
+<div id="historyList">暂无记录</div>
+</div>
+
+<div class="box">
+<div class="box-title gold"><span>📊 数据统计</span><span id="statsScope">当前玩法</span></div>
+<div class="stat-grid">
+  <div class="stat-card"><div class="label">今日投入</div><div class="value" id="statTodaySpend">¥0</div></div>
+  <div class="stat-card"><div class="label">今日中奖</div><div class="value" id="statTodayWin">¥0</div></div>
+  <div class="stat-card"><div class="label">本周盈亏</div><div class="value" id="statWeekProfit">¥0</div></div>
+  <div class="stat-card"><div class="label">本月盈亏</div><div class="value" id="statMonthProfit">¥0</div></div>
+</div>
+<input id="numberSearch" type="text" inputmode="numeric" autocomplete="off" placeholder="🔍 查询号码，例如 03 或 03 12" oninput="updateNumberSearch()"><div class="search-result" id="numberSearchResult">输入号码即可查询出现次数</div>
+</div>
+
+<div class="box">
+<div class="box-title gold"><span>⭐ 我的收藏</span></div>
+<div id="favList">暂无收藏</div>
+</div>
+
+<div class="box">
+<div class="box-title gold">🏆 开奖验证</div>
+<input id="officialFront" type="text" inputmode="text" placeholder="前区：03 12 18 22 27 31" oninput="formatOfficial(this,'front')">
+<input id="officialBack" type="text" inputmode="text" placeholder="后区：07" oninput="formatOfficial(this,'back')">
+<div class="grid2">
+  <input id="recordSpend" type="number" inputmode="decimal" min="0" step="2" value="2" placeholder="每组花费 ¥">
+  <input id="winAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="中奖金额 ¥">
+</div>
+<button class="action" onclick="verifyWin()">验证今日记录并更新中奖金额</button>
+<div class="result" id="verifyResult"></div>
+</div>
+
+<div class="stats-modal" id="statsModal" onclick="if(event.target===this)closeStats()">
+  <div class="stats-panel">
+    <div class="stats-head"><b>📊 统计图</b><button class="small-btn" onclick="closeStats()">关闭</button></div>
+    <div class="tip" style="margin-bottom:10px">当前玩法的投入、中奖金额统计</div>
+    <div id="statsChart"></div>
+  </div>
+</div>
+
+<div class="box">
+<div class="box-title"><span>💾 数据管理</span><span>只保存在本机</span></div>
+<div class="grid2">
+<button class="ghost" onclick="exportData()">📤 导出备份</button>
+<button class="ghost" onclick="importData()">📥 恢复备份</button>
+</div>
+<button class="danger section-btn" onclick="clearAllData()">清空全部本机数据</button>
+</div>
+
+<div class="tip">记录和收藏保存在本机浏览器。建议定期导出备份。选号为随机生成，不代表提高中奖概率。</div>
+</div>
+
+<script>
+const APP_VERSION='2.1.1';
+let currentType='ssq', mode='wheel', spinning=false;
+let frontAll=[], backAll=[], selectedFront=[], selectedBack=[], needFront=6, needBack=1;
+let history=[], favorites=[], batchResults=[];
+
+const $=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(2,'0');
+const key=(name)=>`lottery_wheel_v2_${name}_${currentType}`;
+const allKey=name=>`lottery_wheel_v2_${name}_all`;
+
+function rules(){
+ if(currentType==='ssq') return {front:33,back:16,nf:6,nb:1};
+ return {front:35,back:12,nf:5,nb:2};
+}
+function arrays(){
+ const r=rules();
+ frontAll=Array.from({length:r.front},(_,i)=>i+1);
+ backAll=Array.from({length:r.back},(_,i)=>i+1);
+ needFront=r.nf; needBack=r.nb;
+}
+function loadData(){
+ try{
+   history=JSON.parse(localStorage.getItem(allKey('history'))||'[]');
+   favorites=JSON.parse(localStorage.getItem(allKey('favorites'))||'[]');
+ }catch(e){history=[];favorites=[]}
+}
+function saveData(){
+ localStorage.setItem(allKey('history'),JSON.stringify(history));
+ localStorage.setItem(allKey('favorites'),JSON.stringify(favorites));
+}
+function switchType(t){
+ if(spinning)return;
+ currentType=t; arrays(); selectedFront=[]; selectedBack=[]; batchResults=[];
+ $('tab-ssq').classList.toggle('active',t==='ssq'); $('tab-dlt').classList.toggle('active',t==='dlt');
+ loadData(); buildWheels(); if($('historyRange'))$('historyRange').value='today'; if($('historySearch'))$('historySearch').value=''; if($('numberSearch'))$('numberSearch').value=''; renderAll(); $('verifyResult').textContent=''; if($('manualFront')){$('manualFront').value='';$('manualBack').value='';$('manualResult').textContent='';}
+}
+function setMode(m){
+ mode=m;
+ $('mode-wheel').classList.toggle('active',m==='wheel');
+ $('mode-manual').classList.toggle('active',m==='manual');
+ $('mode-batch').classList.toggle('active',m==='batch');
+ $('wheelMode').classList.toggle('hidden',m!=='wheel');
+ $('manualMode').classList.toggle('hidden',m!=='manual');
+ $('batchMode').classList.toggle('hidden',m!=='batch');
+}
+function buildWheels(){
+ const ow=$('outerWheel'), iw=$('innerWheel');
+ ow.innerHTML=''; iw.innerHTML='<div class="center-dot">中</div>';
+ ow.style.transition='none';ow.style.transform='rotate(0deg)';iw.style.transition='none';iw.style.transform='rotate(0deg)';
+ const step=360/frontAll.length;
+ frontAll.forEach((n,i)=>{const e=document.createElement('div');e.className='num';e.textContent=pad(n);const rad=(i*step-90)*Math.PI/180;e.style.transform=`translate(${Math.cos(rad)*125}px,${Math.sin(rad)*125}px)`;ow.appendChild(e)});
+ const s2=360/backAll.length;
+ backAll.forEach((n,i)=>{const e=document.createElement('div');e.className='num';e.textContent=pad(n);const rad=(i*s2-90)*Math.PI/180;e.style.transform=`translate(${Math.cos(rad)*58}px,${Math.sin(rad)*58}px)`;iw.appendChild(e)});
+}
+function renderAll(){
+ const fl=needFront-selectedFront.length, bl=needBack-selectedBack.length;
+ $('infoText').textContent=`外圈前区还需 ${fl} 个 · 内圈后区还需 ${bl} 个`;
+ $('frontBalls').innerHTML=selectedFront.map(n=>`<div class="ball red">${pad(n)}</div>`).join('');
+ $('backBalls').innerHTML=selectedBack.map(n=>`<div class="ball blue">${pad(n)}</div>`).join('');
+ renderHistory(); renderFavorites(); renderBatch();
+}
+function resetCurrent(){
+ if(spinning)return;
+ selectedFront=[];selectedBack=[];buildWheels();renderAll();$('statusText').textContent='已重置，可以重新转';
+ $('spinBtn').textContent='开始转盘';
+}
+function doSpin(){
+ if(spinning)return;
+ let zone=selectedFront.length<needFront?'front':selectedBack.length<needBack?'back':null;
+ if(!zone){saveCurrent();return}
+ const all=zone==='front'?frontAll:backAll, selected=zone==='front'?selectedFront:selectedBack;
+ const remain=all.filter(n=>!selected.includes(n)); if(!remain.length)return;
+ const chosen=remain[Math.floor(Math.random()*remain.length)],idx=all.indexOf(chosen),step=360/all.length;
+ const wheel=$(zone==='front'?'outerWheel':'innerWheel');
+ spinning=true;$('spinBtn').disabled=true;$('spinBtn').textContent='转动中...';$('statusText').textContent=zone==='front'?'外圈转动中...':'内圈转动中...';
+ wheel.style.transition='none';wheel.style.transform='rotate(0deg)';void wheel.offsetWidth;
+ const extra=6+Math.floor(Math.random()*3),target=extra*360+(360-idx*step);
+ wheel.style.transition='transform 3.8s cubic-bezier(.15,.75,.08,1)';wheel.style.transform=`rotate(${target}deg)`;
+ setTimeout(()=>{
+   (zone==='front'?selectedFront:selectedBack).push(chosen);
+   selectedFront.sort((a,b)=>a-b);selectedBack.sort((a,b)=>a-b);
+   wheel.style.transition='none';wheel.style.transform='rotate(0deg)';
+   spinning=false;$('spinBtn').disabled=false;renderAll();
+   if(selectedFront.length===needFront&&selectedBack.length===needBack){$('spinBtn').textContent='完成本组并保存';$('statusText').textContent='全部选完！再次点击保存'}
+   else {$('spinBtn').textContent='继续转盘';$('statusText').textContent=selectedFront.length<needFront?`前区 ${selectedFront.length}/${needFront}`:`后区 ${selectedBack.length}/${needBack}`}
+ },3900);
+}
+function saveCurrent(){
+ if(selectedFront.length!==needFront||selectedBack.length!==needBack)return;
+ const item={id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:[...selectedFront],back:[...selectedBack],time:new Date().toISOString(),source:'wheel',spend:2,win:0,prize:''};
+ history.unshift(item);history=history.slice(0,300);saveData();renderHistory();
+ $('statusText').textContent='已保存并自动开始新的一组';selectedFront=[];selectedBack=[];buildWheels();renderAll();$('spinBtn').textContent='开始转盘';
+}
+function parseManualNumbers(value, expected, max){
+ const nums=value.trim().split(/\s+/).filter(Boolean).map(Number);
+ if(nums.length!==expected) return {ok:false,msg:`需要输入 ${expected} 个号码，现在是 ${nums.length} 个`};
+ if(nums.some(n=>!Number.isInteger(n)||n<1||n>max)) return {ok:false,msg:`号码必须在 01-${pad(max)} 范围内`};
+ if(new Set(nums).size!==nums.length) return {ok:false,msg:'号码不能重复'};
+ return {ok:true,nums:nums.sort((a,b)=>a-b)};
+}
+function formatNumberInput(input, zone){
+  // 保留用户输入的空格，支持“03 12 18 22 27 31”这种输入方式。
+  // 同时清理中文逗号、字母等无效字符，避免 iPhone 输入法造成解析错误。
+  let v=String(input.value||'').replace(/[^0-9\s]/g,'');
+  v=v.replace(/\s+/g,' ');
+  input.value=v;
+}
+function formatManual(input, zone){
+  formatNumberInput(input, zone);
+  if($('manualResult'))$('manualResult').textContent='';
+}
+function formatOfficial(input, zone){
+  formatNumberInput(input, zone);
+}
+
+function saveManual(){
+ const f=parseManualNumbers($('manualFront').value,needFront,frontAll.length);
+ const b=parseManualNumbers($('manualBack').value,needBack,backAll.length);
+ if(!f.ok){$('manualResult').innerHTML=`<span style="color:#ff6b6b">前区：${f.msg}</span>`;return}
+ if(!b.ok){$('manualResult').innerHTML=`<span style="color:#ff6b6b">后区：${b.msg}</span>`;return}
+ const item={id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:f.nums,back:b.nums,time:new Date().toISOString(),source:'manual',spend:2,win:0,prize:''};
+ history.unshift(item);history=history.slice(0,300);saveData();renderHistory();
+ $('manualResult').innerHTML='<span style="color:#7dff9b">✅ 已保存：'+formatSet(item)+'</span>';
+}
+function clearManual(){
+ $('manualFront').value='';$('manualBack').value='';$('manualResult').textContent='';
+ $('manualFront').focus();
+}
+
+function randomPick(arr,n){return [...arr].sort(()=>Math.random()-.5).slice(0,n).sort((a,b)=>a-b)}
+function makeSet(){return {front:randomPick(frontAll,needFront),back:randomPick(backAll,needBack)}}
+function formatSet(x){return `${x.front.map(pad).join(' ')} + ${x.back.map(pad).join(' ')}`}
+function batch(count){
+ batchResults=Array.from({length:count},makeSet); renderBatch();
+ const now=new Date().toISOString();
+ batchResults.forEach(x=>history.unshift({id:(crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random()),type:currentType,front:x.front,back:x.back,time:now,source:'batch',spend:2,win:0}));
+ history=history.slice(0,300);saveData();renderHistory();
+}
+function renderBatch(){ $('batchList').innerHTML=batchResults.length?batchResults.map((x,i)=>`<div class="history-item"><span class="history-text">${i+1}. ${formatSet(x)}</span><button class="small-btn" onclick="favSet(${i})">⭐</button></div>`).join(''):'暂无结果'}
+function copyText(t){
+ if(navigator.clipboard) return navigator.clipboard.writeText(t);
+ const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();return Promise.resolve();
+}
+function copyCurrent(){
+ if(!selectedFront.length){alert('还没有号码');return}
+ const t=(currentType==='ssq'?'双色球：':'大乐透：')+formatSet({front:selectedFront,back:selectedBack});
+ copyText(t).then(()=>alert('已复制\n'+t));
+}
+function copyBatch(){
+  if(!batchResults.length)return alert('还没有批量结果');
+  const text=batchResults.map((x,i)=>`${i+1}. ${formatSet(x)}`).join('\n');
+  copyText(text).then(()=>alert('已复制全部，每组一行'));
+}
+function saveFavorite(front,back,note=''){
+ favorites.unshift({id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:[...front],back:[...back],note:note||'未命名',time:new Date().toISOString()});
+ favorites=favorites.slice(0,200);saveData();renderFavorites();
+}
+function favSet(i){const x=batchResults[i];const note=prompt('给这组号码写个备注（可留空）：','');if(note!==null)saveFavorite(x.front,x.back,note)}
+function favHistory(i){const h=history[i];const note=prompt('备注名称：','收藏号码');if(note!==null)saveFavorite(h.front,h.back,note)}
+function getRangeStart(range){
+  const now=new Date(); now.setHours(0,0,0,0);
+  if(range==='today') return now;
+  if(range==='yesterday'){const d=new Date(now);d.setDate(d.getDate()-1);return d;}
+  if(range==='7d'){const d=new Date(now);d.setDate(d.getDate()-6);return d;}
+  if(range==='month') return new Date(now.getFullYear(),now.getMonth(),1);
+  return null;
+}
+function inSelectedRange(time){
+  const range=$('historyRange')?.value||'today';
+  const d=new Date(time); const start=getRangeStart(range);
+  if(range==='yesterday'){
+    const end=new Date(start);end.setDate(end.getDate()+1);return d>=start&&d<end;
+  }
+  return !start || d>=start;
+}
+function historyMatches(h){
+  if(h.type!==currentType || !inSelectedRange(h.time)) return false;
+  const q=($('historySearch')?.value||'').replace(/\D/g,'');
+  if(!q)return true;
+  const nums=[...(h.front||[]),...(h.back||[])].map(pad).join('');
+  return nums.includes(q);
+}
+function money(v){return '¥'+Number(v||0).toFixed(2).replace(/\.00$/,'')}
+function editHistory(i){
+  const h=history[i]; if(!h)return;
+  const spend=prompt('修改这组的花费金额：',String(h.spend==null?2:h.spend));
+  if(spend===null)return;
+  const win=prompt('修改这组的中奖金额：',String(h.win||0));
+  if(win===null)return;
+  h.spend=Math.max(0,Number(spend)||0);
+  h.win=Math.max(0,Number(win)||0);
+  saveData();renderAll();
+}
+function copyFilteredHistory(){
+  const arr=history.filter(historyMatches);
+  if(!arr.length)return alert('当前没有可复制的记录');
+  const out=arr.map((h,i)=>`${i+1}. ${formatSet(h)}`).join('\n');
+  copyText(out).then(()=>alert('已复制，每组一行'));
+}
+function renderHistory(){
+  const arr=history.filter(historyMatches);
+  $('historyCount').textContent=arr.length+' 组';
+  $('historyList').innerHTML=arr.length
+    ? arr.map(h=>{
+        const globalIndex=history.indexOf(h);
+        const prize=h.prize?` · ${h.prize}`:'';
+        return `<div class="history-item">
+          <span class="history-text">${new Date(h.time).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}　${formatSet(h)}<br><span style="color:#888">花费 ${money(h.spend==null?2:h.spend)} · 中奖 ${money(h.win)}${prize}</span></span>
+          <button class="small-btn" onclick="copyHistory(${globalIndex})">📋</button>
+          <button class="small-btn" onclick="editHistory(${globalIndex})">✏️</button>
+          <button class="small-btn" onclick="favHistory(${globalIndex})">⭐</button>
+          <button class="small-btn" onclick="delHistory(${globalIndex})">删</button>
+        </div>`;
+      }).join('')
+    :'暂无符合条件的记录';
+  updateTodayMoney();
+  updateStats();
+  updateNumberSearch();
+}
+function copyHistory(i){
+  const h=history[i]; if(!h)return;
+  copyText(formatSet(h)).then(()=>alert('已复制\n'+formatSet(h)));
+}
+function updateTodayMoney(){
+  const todayKey=new Date().toDateString();
+  const arr=history.filter(h=>h.type===currentType && new Date(h.time).toDateString()===todayKey);
+  const spend=arr.reduce((s,h)=>s+Number(h.spend==null?2:h.spend),0);
+  const win=arr.reduce((s,h)=>s+Number(h.win||0),0);
+  const profit=win-spend;
+  if($('todayDate')) $('todayDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'});
+  if($('todaySpend')) $('todaySpend').textContent=money(spend);
+  if($('todayWin')) $('todayWin').textContent=money(win);
+  if($('todayProfit')){ $('todayProfit').textContent=(profit>=0?'+':'-')+money(Math.abs(profit)); $('todayProfit').style.color=profit>=0?'#ffd700':'#ff8fa3'; }
+}
+function periodStats(start,end){
+  const arr=history.filter(h=>{
+    if(h.type!==currentType)return false;
+    const d=new Date(h.time);
+    return (!start || d>=start) && (!end || d<end);
+  });
+  const spend=arr.reduce((s,h)=>s+Number(h.spend==null?2:h.spend),0);
+  const win=arr.reduce((s,h)=>s+Number(h.win||0),0);
+  return {arr,spend,win,profit:win-spend};
+}
+function updateStats(){
+  const now=new Date(); const day=new Date(now);day.setHours(0,0,0,0);
+  const week=new Date(day); week.setDate(week.getDate()-((week.getDay()+6)%7));
+  const month=new Date(now.getFullYear(),now.getMonth(),1);
+  const t=periodStats(day), w=periodStats(week), m=periodStats(month);
+  if($('statTodaySpend'))$('statTodaySpend').textContent=money(t.spend);
+  if($('statTodayWin'))$('statTodayWin').textContent=money(t.win);
+  if($('statWeekProfit'))$('statWeekProfit').textContent=(w.profit>=0?'+':'-')+money(Math.abs(w.profit));
+  if($('statMonthProfit'))$('statMonthProfit').textContent=(m.profit>=0?'+':'-')+money(Math.abs(m.profit));
+}
+function updateNumberSearch(){
+  const q=($('numberSearch')?.value||'').replace(/\D/g,'');
+  if(!$('numberSearchResult'))return;
+  if(!q){$('numberSearchResult').textContent='输入号码即可查询出现次数';return}
+  const hits=history.filter(h=>h.type===currentType && [...(h.front||[]),...(h.back||[])].some(n=>pad(n)===q.padStart(2,'0')));
+  const exactSet=history.filter(h=>h.type===currentType && [...(h.front||[]),...(h.back||[])].map(pad).join('').includes(q));
+  $('numberSearchResult').innerHTML=`号码 <b>${q.padStart(2,'0')}</b>：单号出现 ${hits.length} 次；包含该数字组合的记录 ${exactSet.length} 组`;
+}
+function renderFavorites(){
+ const arr=favorites.filter(x=>x.type===currentType);
+ $('favList').innerHTML=arr.length?arr.map(x=>`<div class="fav-item"><span class="history-text"><span class="fav">⭐ ${x.note}</span><br>${formatSet(x)}</span><button class="small-btn" onclick="copyText('${currentType==='ssq'?'双色球：':'大乐透：'}${formatSet(x)}')">复制</button><button class="small-btn" onclick="delFav('${x.id}')">删除</button></div>`).join(''):'暂无收藏';
+}
+function delFav(id){favorites=favorites.filter(x=>x.id!==id);saveData();renderFavorites()}
+function verifyWin(){
+  const fi=$('officialFront').value.trim(), bi=$('officialBack').value.trim();
+  if(!fi||!bi)return $('verifyResult').innerHTML='<span style="color:#ff6b6b">请输入完整开奖号码</span>';
+  const of=fi.split(/\s+/).map(Number).filter(Number.isFinite), ob=bi.split(/\s+/).map(Number).filter(Number.isFinite);
+  if(of.length!==needFront||ob.length!==needBack)
+    return $('verifyResult').innerHTML=`<span style="color:#ff6b6b">${currentType==='ssq'?'双色球需要前6后1':'大乐透需要前5后2'}</span>`;
+
+  const prizeSSQ=(f,b)=>f===6&&b===1?'一等奖':f===6?'二等奖':f===5&&b===1?'三等奖':(f===5||(f===4&&b===1))?'四等奖':(f===4||(f===3&&b===1))?'五等奖':b===1?'六等奖':'未中奖';
+  const prizeDLT=(f,b)=>f===5&&b===2?'一等奖':f===5&&b===1?'二等奖':f===5?'三等奖':f===4&&b===2?'四等奖':f===4&&b===1?'五等奖':f===3&&b===2?'六等奖':f===4?'七等奖':(f===3&&b===1)||(f===2&&b===2)?'八等奖':(f===3||b===2||(f===2&&b===1)||(f===1&&b===2))?'九等奖':'未中奖';
+
+  const arr=history.filter(h=>h.type===currentType);
+  const winInput=Math.max(0,Number($('winAmount').value||0));
+  let wins=0;
+  const lines=arr.map(h=>{
+    const fh=h.front.filter(n=>of.includes(n)).length, bh=h.back.filter(n=>ob.includes(n)).length;
+    const p=currentType==='ssq'?prizeSSQ(fh,bh):prizeDLT(fh,bh);
+    h.prize=p;
+    if(h.spend==null)h.spend=2;
+    if(p!=='未中奖'){wins++; if(winInput>0)h.win=winInput;} else h.win=0;
+    const hs=a=>a.map(n=>of.includes(n)?`<span class="hit">${pad(n)}</span>`:pad(n)).join(' ');
+    const hb=a=>a.map(n=>ob.includes(n)?`<span class="hit">${pad(n)}</span>`:pad(n)).join(' ');
+    return `${hs(h.front)} + ${hb(h.back)} → <b style="color:${p==='未中奖'?'#999':'#ffd700'}">${p}</b>${p!=='未中奖'&&winInput>0?' · '+money(winInput):''}`;
+  });
+  saveData(); renderAll();
+  $('verifyResult').innerHTML=`已验证 ${arr.length} 组，中奖 ${wins} 组。奖级已自动记录${winInput>0?'，中奖金额已更新':''}<br><br>${lines.join('<br>')||'暂无该玩法记录'}`;
+}
+function showStats(){
+  const modal=$('statsModal'), chart=$('statsChart');
+  if(!modal||!chart)return;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const week=new Date(today); week.setDate(week.getDate()-((week.getDay()+6)%7));
+  const month=new Date(today.getFullYear(),today.getMonth(),1);
+  const all=periodStats(null).arr;
+  const t=periodStats(today), w=periodStats(week), m=periodStats(month);
+  const totalSpend=all.reduce((a,h)=>a+Number(h.spend==null?2:h.spend),0);
+  const totalWin=all.reduce((a,h)=>a+Number(h.win||0),0);
+  const rows=[['今天',t.arr.length,t.spend,t.win],['本周',w.arr.length,w.spend,w.win],['本月',m.arr.length,m.spend,m.win],['全部',all.length,totalSpend,totalWin]];
+  const max=Math.max(1,...rows.map(r=>Math.max(r[2],r[3])));
+  chart.innerHTML=rows.map(r=>`<div class="chart-row"><span>${r[0]}<br>${r[1]}组</span><div><div class="chart-track"><div class="chart-bar" style="width:${r[2]/max*100}%"></div></div><div class="chart-track" style="margin-top:4px"><div class="chart-bar" style="width:${r[3]/max*100}%;background:linear-gradient(90deg,#4cc9f0,#7dff9b)"></div></div></div><span class="chart-num">投 ${money(r[2])}<br>中 ${money(r[3])}</span></div>`).join('')+`<div class="tip" style="margin-top:12px">第一条为投入，第二条为中奖。数据来自本机历史记录。</div>`;
+  modal.classList.add('show');
+}
+function closeStats(){if($('statsModal'))$('statsModal').classList.remove('show');}
+
+function exportData(){
+ const data={app:'彩票转盘',version:APP_VERSION,exportedAt:new Date().toISOString(),history,favorites};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`彩票转盘备份_${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href);
+}
+function importData(){
+ const input=document.createElement('input');input.type='file';input.accept='.json,application/json';
+ input.onchange=()=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.history)||!Array.isArray(d.favorites))throw Error();history=d.history;favorites=d.favorites;saveData();renderAll();alert('恢复成功')}catch(e){alert('备份文件格式不正确')}};r.readAsText(f)};input.click();
+}
+function clearAllData(){
+ if(!confirm('确定删除本机全部历史、收藏和批量记录吗？此操作不可撤销。'))return;
+ localStorage.removeItem(allKey('history'));localStorage.removeItem(allKey('favorites'));history=[];favorites=[];batchResults=[];renderAll();alert('已清空本机数据');
+}
+function init(){
+ arrays();loadData();buildWheels();renderAll();updateTodayMoney();updateStats();updateNumberSearch();$('statusText').textContent='点击「开始转盘」开始选号';
+}
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+init();
+</script>
+</body>
+</html>
