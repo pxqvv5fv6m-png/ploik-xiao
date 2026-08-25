@@ -44,7 +44,10 @@ h1{
   margin:4px 0 10px
 }
 
-.tabs,.mode-row,.btn-row,.grid2{
+.tabs,
+.mode-row,
+.btn-row,
+.grid2{
   display:flex;
   gap:8px
 }
@@ -67,7 +70,8 @@ button:disabled{
   opacity:.42
 }
 
-.tab,.mode{
+.tab,
+.mode{
   flex:1;
   background:#ffffff14;
   color:#bbb
@@ -278,7 +282,8 @@ button:disabled{
   color:#ffd700
 }
 
-input,select{
+input,
+select{
   width:100%;
   border:1px solid #ffffff25;
   background:#0d0b20;
@@ -333,9 +338,10 @@ select{
   margin-top:7px
 }
 
-.history-item,.fav-item{
+.history-item,
+.fav-item{
   font-size:11px;
-  padding:6px 2px;
+  padding:7px 2px;
   border-bottom:1px solid #ffffff0d;
   display:flex;
   gap:5px;
@@ -344,7 +350,8 @@ select{
 
 .history-text{
   flex:1;
-  line-height:1.5
+  min-width:0;
+  line-height:1.55
 }
 
 .fav{
@@ -465,18 +472,46 @@ select{
   color:#fff
 }
 
-.fold-btn{
-  width:100%;
-  margin-top:8px;
-  padding:9px;
-  background:#ffffff10;
-  color:#aaa;
-  border:1px solid #ffffff12
+.win-money{
+  color:#ffd700;
+  font-weight:800
 }
 
-.win-line{
-  color:#ffd700;
-  font-weight:700
+.loss-money{
+  color:#ff8fa3
+}
+
+.expand-btn{
+  margin-top:8px;
+  width:100%;
+  background:#ffffff12;
+  color:#ccc;
+  font-size:12px
+}
+
+.verify-summary{
+  background:#0004;
+  border-radius:10px;
+  padding:9px;
+  margin-bottom:8px;
+  line-height:1.8
+}
+
+@media(max-width:350px){
+  .wheel-box,
+  .outer-wheel{
+    width:280px;
+    height:280px
+  }
+
+  .inner-wheel{
+    top:65px;
+    left:65px
+  }
+
+  .outer-wheel .num{
+    transform-origin:center
+  }
 }
 </style>
 </head>
@@ -488,390 +523,466 @@ select{
 <h1>🎰 彩票转盘</h1>
 
 <div class="tabs">
-<button class="tab active" id="tab-ssq" onclick="switchType('ssq')">双色球</button>
-<button class="tab" id="tab-dlt" onclick="switchType('dlt')">大乐透</button>
+  <button class="tab active" id="tab-ssq" onclick="switchType('ssq')">双色球</button>
+  <button class="tab" id="tab-dlt" onclick="switchType('dlt')">大乐透</button>
 </div>
 
 <div class="mode-row">
-<button class="mode active" id="mode-wheel" onclick="setMode('wheel')">🎡 转盘</button>
-<button class="mode" id="mode-manual" onclick="setMode('manual')">✍️ 手动</button>
-<button class="mode" id="mode-batch" onclick="setMode('batch')">🎲 批量</button>
+  <button class="mode active" id="mode-wheel" onclick="setMode('wheel')">🎡 转盘</button>
+  <button class="mode" id="mode-manual" onclick="setMode('manual')">✍️ 手动</button>
+  <button class="mode" id="mode-batch" onclick="setMode('batch')">🎲 批量</button>
 </div>
 
 <section id="wheelMode">
 
-<div class="info" id="infoText"></div>
+  <div class="info" id="infoText"></div>
 
-<div class="wheel-box">
-<div class="pointer-outer"></div>
-<div class="pointer-inner"></div>
-<div class="outer-wheel" id="outerWheel"></div>
-<div class="inner-wheel" id="innerWheel">
-<div class="center-dot">中</div>
-</div>
-</div>
+  <div class="wheel-box">
+    <div class="pointer-outer"></div>
+    <div class="pointer-inner"></div>
+    <div class="outer-wheel" id="outerWheel"></div>
+    <div class="inner-wheel" id="innerWheel">
+      <div class="center-dot">中</div>
+    </div>
+  </div>
 
-<div class="info">已选前区</div>
-<div class="balls" id="frontBalls"></div>
+  <div class="info">已选前区</div>
+  <div class="balls" id="frontBalls"></div>
 
-<div class="info">已选后区</div>
-<div class="balls" id="backBalls"></div>
+  <div class="info">已选后区</div>
+  <div class="balls" id="backBalls"></div>
 
-<div class="status" id="statusText">点击开始转盘</div>
+  <div class="status" id="statusText">点击开始转盘</div>
 
-<div class="btn-row">
-<button class="spin-btn" id="spinBtn" onclick="doSpin()">开始转盘</button>
-<button class="copy-btn" onclick="copyCurrent()">复制</button>
-<button class="clear-btn" onclick="resetCurrent()">重置</button>
-</div>
+  <div class="btn-row">
+    <button class="spin-btn" id="spinBtn" onclick="doSpin()">开始转盘</button>
+    <button class="copy-btn" onclick="copyCurrent()">复制</button>
+    <button class="clear-btn" onclick="resetCurrent()">重置</button>
+  </div>
 
 </section>
 
 <section id="manualMode" class="hidden">
 
-<div class="box">
+  <div class="box">
 
-<div class="box-title">
-<span>✍️ 手动输入号码</span>
-<span>输入后自动加空格</span>
-</div>
+    <div class="box-title">
+      <span>✍️ 手动输入号码</span>
+      <span>输入后自动加空格</span>
+    </div>
 
-<div class="tip" style="margin-bottom:8px">
-直接输入数字即可，例如双色球输入 031218222731，
-自动变成 03 12 18 22 27 31；
-大乐透后区输入 0709，自动变成 07 09。
-</div>
+    <div class="tip" style="margin-bottom:8px">
+      直接输入数字即可，例如双色球输入
+      031218222731，自动变成
+      03 12 18 22 27 31。
+      大乐透后区输入0709，自动变成07 09。
+    </div>
 
-<label style="display:block;font-size:12px;color:#aaa;margin:2px 0 5px">
-前区
-</label>
+    <label style="display:block;font-size:12px;color:#aaa;margin:2px 0 5px">
+      前区
+    </label>
 
-<input
-id="manualFront"
-type="text"
-inputmode="text"
-autocomplete="off"
-placeholder="双色球：03 12 18 22 27 31 / 大乐透：01 08 15 22 35"
-oninput="formatManual(this,'front')">
+    <input
+      id="manualFront"
+      type="text"
+      inputmode="text"
+      autocomplete="off"
+      placeholder="双色球：03 12 18 22 27 31 / 大乐透：01 08 15 22 35"
+      oninput="formatManual(this,'front')"
+    >
 
-<label style="display:block;font-size:12px;color:#aaa;margin:2px 0 5px">
-后区
-</label>
+    <label style="display:block;font-size:12px;color:#aaa;margin:2px 0 5px">
+      后区
+    </label>
 
-<input
-id="manualBack"
-type="text"
-inputmode="text"
-autocomplete="off"
-placeholder="双色球：07 / 大乐透：07 09"
-oninput="formatManual(this,'back')">
+    <input
+      id="manualBack"
+      type="text"
+      inputmode="text"
+      autocomplete="off"
+      placeholder="双色球：07 / 大乐透：07 09"
+      oninput="formatManual(this,'back')"
+    >
 
-<button class="action" onclick="saveManual()">
-💾 保存这组号码
-</button>
+    <button class="action" onclick="saveManual()">
+      💾 保存这组号码
+    </button>
 
-<button class="ghost section-btn" onclick="clearManual()">
-清空重新输入
-</button>
+    <button class="ghost section-btn" onclick="clearManual()">
+      清空重新输入
+    </button>
 
-<div class="result" id="manualResult"></div>
+    <div class="result" id="manualResult"></div>
 
-</div>
+  </div>
 
 </section>
 
 <section id="batchMode" class="hidden">
 
-<div class="box">
+  <div class="box">
 
-<div class="box-title">
-<span>批量随机选号</span>
-<span>每组号码不重复</span>
-</div>
+    <div class="box-title">
+      <span>批量随机选号</span>
+      <span>每组号码不重复</span>
+    </div>
 
-<div class="grid2">
+    <div class="grid2">
 
-<button class="action" onclick="batch(1)">
-生成 1 组
-</button>
+      <button class="action" onclick="batch(1)">
+        生成 1 组
+      </button>
 
-<button class="action" onclick="batch(5)">
-生成 5 组
-</button>
+      <button class="action" onclick="batch(5)">
+        生成 5 组
+      </button>
 
-<button class="action" onclick="batch(10)">
-生成 10 组
-</button>
+      <button class="action" onclick="batch(10)">
+        生成 10 组
+      </button>
 
-<button class="action" onclick="batch(20)">
-生成 20 组
-</button>
+      <button class="action" onclick="batch(20)">
+        生成 20 组
+      </button>
 
-<button class="action" onclick="batch(50)">
-生成 50 组
-</button>
+      <button class="action" onclick="batch(50)">
+        生成 50 组
+      </button>
 
-<button class="action" onclick="batch(100)">
-生成 100 组
-</button>
+      <button class="action" onclick="batch(100)">
+        生成 100 组
+      </button>
 
-</div>
-</div>
+    </div>
 
-<div class="box">
+  </div>
 
-<div class="box-title">
-<span>本次批量结果</span>
-<button class="small-btn" onclick="copyBatch()">复制全部</button>
-</div>
+  <div class="box">
 
-<div id="batchList">暂无结果</div>
+    <div class="box-title">
+      <span>本次批量结果</span>
+      <button class="small-btn" onclick="copyBatch()">复制全部</button>
+    </div>
 
-</div>
+    <div id="batchList">暂无结果</div>
+
+  </div>
 
 </section>
 
-<div class="box">
-
-<div class="box-title gold">
-<span>💰 今日账本</span>
-<span id="todayDate"></span>
-</div>
-
-<div class="grid2" style="margin-bottom:8px">
-
-<div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
-<div style="font-size:11px;color:#aaa">今日花费</div>
-<div id="todaySpend" style="font-size:17px;font-weight:800;color:#ff8fa3;margin-top:3px">¥0</div>
-</div>
-
-<div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
-<div style="font-size:11px;color:#aaa">今日赚取</div>
-<div id="todayWin" style="font-size:17px;font-weight:800;color:#ffd700;margin-top:3px">¥0</div>
-</div>
-
-</div>
-
-<div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
-<div style="font-size:11px;color:#aaa">今日盈亏</div>
-<div id="todayProfit" style="font-size:18px;font-weight:900;color:#fff;margin-top:3px">¥0</div>
-</div>
-
-<div class="tip" style="margin-top:7px">
-每组默认按 ¥2 计算；验证中奖后可填写实际中奖金额。
-</div>
-
-</div>
+<!-- 今日账本 -->
 
 <div class="box">
 
-<div class="box-title">
-<span>📜 记录</span>
-<span id="historyCount">0 组</span>
+  <div class="box-title gold">
+    <span>💰 今日账本</span>
+    <span id="todayDate"></span>
+  </div>
+
+  <div class="grid2" style="margin-bottom:8px">
+
+    <div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
+
+      <div style="font-size:11px;color:#aaa">
+        今日花费
+      </div>
+
+      <div
+        id="todaySpend"
+        style="font-size:17px;font-weight:800;color:#ff8fa3;margin-top:3px"
+      >
+        ¥0
+      </div>
+
+    </div>
+
+    <div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
+
+      <div style="font-size:11px;color:#aaa">
+        今日赚取
+      </div>
+
+      <div
+        id="todayWin"
+        style="font-size:17px;font-weight:800;color:#ffd700;margin-top:3px"
+      >
+        ¥0
+      </div>
+
+    </div>
+
+  </div>
+
+  <div style="background:#0004;border-radius:10px;padding:9px;text-align:center">
+
+    <div style="font-size:11px;color:#aaa">
+      今日盈亏
+    </div>
+
+    <div
+      id="todayProfit"
+      style="font-size:18px;font-weight:900;color:#fff;margin-top:3px"
+    >
+      ¥0
+    </div>
+
+  </div>
+
+  <div class="tip" style="margin-top:7px">
+    每组默认按 ¥2 计算；验证中奖后填写实际中奖金额。
+  </div>
+
 </div>
 
-<div class="grid2">
-
-<select id="historyRange" onchange="resetHistoryFold();renderHistory()">
-<option value="today">今天</option>
-<option value="yesterday">昨天</option>
-<option value="7d">近7天</option>
-<option value="month">本月</option>
-<option value="all">全部</option>
-</select>
-
-<input
-id="historySearch"
-type="text"
-inputmode="numeric"
-autocomplete="off"
-placeholder="搜索号码"
-oninput="resetHistoryFold();renderHistory()">
-
-</div>
-
-<div class="btn-row" style="margin-top:5px">
-
-<button class="ghost" onclick="copyFilteredHistory()">
-📋复制当前列表
-</button>
-
-<button class="ghost" onclick="showStats()">
-📊统计
-</button>
-
-</div>
-
-<div id="historyList">
-暂无记录
-</div>
-
-</div>
+<!-- 历史 -->
 
 <div class="box">
 
-<div class="box-title gold">
-<span>📊 数据统计</span>
-<span id="statsScope">当前玩法</span>
+  <div class="box-title">
+
+    <span>📜 记录</span>
+
+    <span id="historyCount">
+      0 组
+    </span>
+
+  </div>
+
+  <div class="grid2">
+
+    <select id="historyRange" onchange="historyExpanded=false;renderHistory()">
+      <option value="today">今天</option>
+      <option value="yesterday">昨天</option>
+      <option value="7d">近7天</option>
+      <option value="month">本月</option>
+      <option value="all">全部</option>
+    </select>
+
+    <input
+      id="historySearch"
+      type="text"
+      inputmode="numeric"
+      autocomplete="off"
+      placeholder="搜索号码"
+      oninput="historyExpanded=false;renderHistory()"
+    >
+
+  </div>
+
+  <div class="btn-row" style="margin-top:5px">
+
+    <button class="ghost" onclick="copyFilteredHistory()">
+      📋复制当前列表
+    </button>
+
+    <button class="ghost" onclick="showStats()">
+      📊统计
+    </button>
+
+  </div>
+
+  <div id="historyList">
+    暂无记录
+  </div>
+
 </div>
 
-<div class="stat-grid">
-
-<div class="stat-card">
-<div class="label">今日投入</div>
-<div class="value" id="statTodaySpend">¥0</div>
-</div>
-
-<div class="stat-card">
-<div class="label">今日中奖</div>
-<div class="value" id="statTodayWin">¥0</div>
-</div>
-
-<div class="stat-card">
-<div class="label">本周盈亏</div>
-<div class="value" id="statWeekProfit">¥0</div>
-</div>
-
-<div class="stat-card">
-<div class="label">本月盈亏</div>
-<div class="value" id="statMonthProfit">¥0</div>
-</div>
-
-</div>
-
-<input
-id="numberSearch"
-type="text"
-inputmode="numeric"
-autocomplete="off"
-placeholder="🔍 查询号码，例如 03 或 03 12"
-oninput="updateNumberSearch()">
-
-<div class="search-result" id="numberSearchResult">
-输入号码即可查询出现次数
-</div>
-
-</div>
+<!-- 数据统计 -->
 
 <div class="box">
 
-<div class="box-title gold">
-<span>⭐ 我的收藏</span>
+  <div class="box-title gold">
+    <span>📊 数据统计</span>
+    <span id="statsScope">当前玩法</span>
+  </div>
+
+  <div class="stat-grid">
+
+    <div class="stat-card">
+      <div class="label">今日投入</div>
+      <div class="value" id="statTodaySpend">¥0</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="label">今日中奖</div>
+      <div class="value" id="statTodayWin">¥0</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="label">本周盈亏</div>
+      <div class="value" id="statWeekProfit">¥0</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="label">本月盈亏</div>
+      <div class="value" id="statMonthProfit">¥0</div>
+    </div>
+
+  </div>
+
+  <input
+    id="numberSearch"
+    type="text"
+    inputmode="numeric"
+    autocomplete="off"
+    placeholder="🔍 查询号码，例如 03 或 03 12"
+    oninput="updateNumberSearch()"
+  >
+
+  <div class="search-result" id="numberSearchResult">
+    输入号码即可查询出现次数
+  </div>
+
 </div>
 
-<div id="favList">
-暂无收藏
-</div>
-
-</div>
+<!-- 收藏 -->
 
 <div class="box">
 
-<div class="box-title gold">
-🏆 开奖验证
-</div>
+  <div class="box-title gold">
+    <span>⭐ 我的收藏</span>
+  </div>
 
-<input
-id="officialFront"
-type="text"
-inputmode="text"
-placeholder="前区：03 12 18 22 27 31"
-oninput="formatOfficial(this,'front')">
-
-<input
-id="officialBack"
-type="text"
-inputmode="text"
-placeholder="后区：07"
-oninput="formatOfficial(this,'back')">
-
-<div class="grid2">
-
-<input
-id="recordSpend"
-type="number"
-inputmode="decimal"
-min="0"
-step="2"
-value="2"
-placeholder="每组花费 ¥">
-
-<input
-id="winAmount"
-type="number"
-inputmode="decimal"
-min="0"
-step="0.01"
-placeholder="本次总中奖金额 ¥">
+  <div id="favList">
+    暂无收藏
+  </div>
 
 </div>
 
-<button class="action" onclick="verifyWin()">
-验证记录并更新中奖金额
-</button>
-
-<div class="result" id="verifyResult"></div>
-
-</div>
-
-<div class="stats-modal" id="statsModal" onclick="if(event.target===this)closeStats()">
-
-<div class="stats-panel">
-
-<div class="stats-head">
-<b>📊 双色球 + 大乐透 综合统计</b>
-<button class="small-btn" onclick="closeStats()">关闭</button>
-</div>
-
-<div class="grid2" style="margin-bottom:10px">
-
-<select id="statsRange" onchange="showStats()">
-<option value="today">今天</option>
-<option value="7d">近7天</option>
-<option value="month">本月</option>
-<option value="all" selected>全部</option>
-</select>
-
-<div class="tip" style="margin:0;display:flex;align-items:center;justify-content:center">
-两种玩法分开统计，最后合计
-</div>
-
-</div>
-
-<div id="statsChart"></div>
-
-</div>
-
-</div>
+<!-- 开奖验证 -->
 
 <div class="box">
 
-<div class="box-title">
-<span>💾 数据管理</span>
-<span>只保存在本机</span>
+  <div class="box-title gold">
+    🏆 开奖验证
+  </div>
+
+  <input
+    id="officialFront"
+    type="text"
+    inputmode="text"
+    placeholder="前区：03 12 18 22 27 31"
+    oninput="formatOfficial(this,'front')"
+  >
+
+  <input
+    id="officialBack"
+    type="text"
+    inputmode="text"
+    placeholder="后区：07"
+    oninput="formatOfficial(this,'back')"
+  >
+
+  <div class="grid2">
+
+    <input
+      id="recordSpend"
+      type="number"
+      inputmode="decimal"
+      min="0"
+      step="2"
+      value="2"
+      placeholder="每组花费 ¥"
+    >
+
+    <input
+      id="winAmount"
+      type="number"
+      inputmode="decimal"
+      min="0"
+      step="0.01"
+      placeholder="中奖金额 ¥"
+    >
+
+  </div>
+
+  <button class="action" onclick="verifyWin()">
+    验证今日记录并更新中奖金额
+  </button>
+
+  <div class="result" id="verifyResult"></div>
+
 </div>
 
-<div class="grid2">
+<!-- 统计弹窗 -->
 
-<button class="ghost" onclick="exportData()">
-📤 导出备份
-</button>
+<div
+  class="stats-modal"
+  id="statsModal"
+  onclick="if(event.target===this)closeStats()"
+>
 
-<button class="ghost" onclick="importData()">
-📥 恢复备份
-</button>
+  <div class="stats-panel">
+
+    <div class="stats-head">
+
+      <b>
+        📊 双色球 + 大乐透 综合统计
+      </b>
+
+      <button class="small-btn" onclick="closeStats()">
+        关闭
+      </button>
+
+    </div>
+
+    <div class="grid2" style="margin-bottom:10px">
+
+      <select id="statsRange" onchange="showStats()">
+        <option value="today">今天</option>
+        <option value="7d">近7天</option>
+        <option value="month">本月</option>
+        <option value="all" selected>全部</option>
+      </select>
+
+      <div
+        class="tip"
+        style="margin:0;display:flex;align-items:center;justify-content:center"
+      >
+        两种玩法分开统计，最后合计
+      </div>
+
+    </div>
+
+    <div id="statsChart"></div>
+
+  </div>
 
 </div>
 
-<button class="danger section-btn" onclick="clearAllData()">
-清空全部本机数据
-</button>
+<!-- 数据管理 -->
+
+<div class="box">
+
+  <div class="box-title">
+    <span>💾 数据管理</span>
+    <span>只保存在本机</span>
+  </div>
+
+  <div class="grid2">
+
+    <button class="ghost" onclick="exportData()">
+      📤 导出备份
+    </button>
+
+    <button class="ghost" onclick="importData()">
+      📥 恢复备份
+    </button>
+
+  </div>
+
+  <button
+    class="danger section-btn"
+    onclick="clearAllData()"
+  >
+    清空全部本机数据
+  </button>
 
 </div>
 
 <div class="tip">
-记录和收藏保存在本机浏览器。建议定期导出备份。
-选号为随机生成，不代表提高中奖概率。
+  记录和收藏保存在本机浏览器。建议定期导出备份。
+  选号为随机生成，不代表提高中奖概率。
 </div>
 
 </div>
@@ -897,9 +1008,13 @@ let history=[];
 let favorites=[];
 let batchResults=[];
 
-/* 折叠状态 */
-let batchExpanded=false;
 let historyExpanded=false;
+let batchExpanded=false;
+
+
+/* =========================
+   基础工具
+========================= */
 
 const $=id=>document.getElementById(id);
 
@@ -911,18 +1026,20 @@ const allKey=name=>`lottery_wheel_v2_${name}_all`;
 
 
 /* =========================
-   彩票规则
+   玩法规则
 ========================= */
 
 function rules(){
 
   if(currentType==='ssq'){
+
     return {
       front:33,
       back:16,
       nf:6,
       nb:1
     };
+
   }
 
   return {
@@ -933,10 +1050,6 @@ function rules(){
   };
 }
 
-
-/* =========================
-   初始化号码
-========================= */
 
 function arrays(){
 
@@ -958,7 +1071,7 @@ function arrays(){
 
 
 /* =========================
-   数据读取
+   数据
 ========================= */
 
 function loadData(){
@@ -966,15 +1079,16 @@ function loadData(){
   try{
 
     history=JSON.parse(
-      localStorage.getItem(allKey('history'))||'[]'
+      localStorage.getItem(
+        allKey('history')
+      )||'[]'
     );
 
     favorites=JSON.parse(
-      localStorage.getItem(allKey('favorites'))||'[]'
+      localStorage.getItem(
+        allKey('favorites')
+      )||'[]'
     );
-
-    if(!Array.isArray(history))history=[];
-    if(!Array.isArray(favorites))favorites=[];
 
   }catch(e){
 
@@ -983,12 +1097,29 @@ function loadData(){
 
   }
 
+  /*
+   * 兼容旧版本数据
+   */
+  history=history.map(h=>{
+
+    if(h.spend==null){
+      h.spend=2;
+    }
+
+    if(h.win==null){
+      h.win=0;
+    }
+
+    if(h.prize==null){
+      h.prize='';
+    }
+
+    return h;
+
+  });
+
 }
 
-
-/* =========================
-   数据保存
-========================= */
 
 function saveData(){
 
@@ -1022,8 +1153,8 @@ function switchType(t){
 
   batchResults=[];
 
-  batchExpanded=false;
   historyExpanded=false;
+  batchExpanded=false;
 
   $('tab-ssq').classList.toggle(
     'active',
@@ -1039,14 +1170,17 @@ function switchType(t){
 
   buildWheels();
 
-  if($('historyRange'))
+  if($('historyRange')){
     $('historyRange').value='today';
+  }
 
-  if($('historySearch'))
+  if($('historySearch')){
     $('historySearch').value='';
+  }
 
-  if($('numberSearch'))
+  if($('numberSearch')){
     $('numberSearch').value='';
+  }
 
   renderAll();
 
@@ -1062,10 +1196,6 @@ function switchType(t){
 
 }
 
-
-/* =========================
-   模式切换
-========================= */
 
 function setMode(m){
 
@@ -1129,9 +1259,11 @@ function buildWheels(){
     const e=document.createElement('div');
 
     e.className='num';
+
     e.textContent=pad(n);
 
-    const rad=(i*step-90)*Math.PI/180;
+    const rad=
+      (i*step-90)*Math.PI/180;
 
     e.style.transform=
       `translate(${Math.cos(rad)*125}px,${Math.sin(rad)*125}px)`;
@@ -1147,9 +1279,11 @@ function buildWheels(){
     const e=document.createElement('div');
 
     e.className='num';
+
     e.textContent=pad(n);
 
-    const rad=(i*s2-90)*Math.PI/180;
+    const rad=
+      (i*s2-90)*Math.PI/180;
 
     e.style.transform=
       `translate(${Math.cos(rad)*58}px,${Math.sin(rad)*58}px)`;
@@ -1160,10 +1294,6 @@ function buildWheels(){
 
 }
 
-
-/* =========================
-   全局渲染
-========================= */
 
 function renderAll(){
 
@@ -1193,10 +1323,6 @@ function renderAll(){
 }
 
 
-/* =========================
-   重置当前号码
-========================= */
-
 function resetCurrent(){
 
   if(spinning)return;
@@ -1215,10 +1341,6 @@ function resetCurrent(){
 
 }
 
-
-/* =========================
-   转盘选号
-========================= */
 
 function doSpin(){
 
@@ -1268,10 +1390,11 @@ function doSpin(){
   const step=
     360/all.length;
 
-  const wheel=
-    $(zone==='front'
+  const wheel=$(
+    zone==='front'
       ?'outerWheel'
-      :'innerWheel');
+      :'innerWheel'
+  );
 
   spinning=true;
 
@@ -1293,7 +1416,9 @@ function doSpin(){
   void wheel.offsetWidth;
 
   const extra=
-    6+Math.floor(Math.random()*3);
+    6+Math.floor(
+      Math.random()*3
+    );
 
   const target=
     extra*360+
@@ -1313,8 +1438,13 @@ function doSpin(){
         :selectedBack
     ).push(chosen);
 
-    selectedFront.sort((a,b)=>a-b);
-    selectedBack.sort((a,b)=>a-b);
+    selectedFront.sort(
+      (a,b)=>a-b
+    );
+
+    selectedBack.sort(
+      (a,b)=>a-b
+    );
 
     wheel.style.transition='none';
 
@@ -1355,10 +1485,6 @@ function doSpin(){
 }
 
 
-/* =========================
-   保存转盘号码
-========================= */
-
 function saveCurrent(){
 
   if(
@@ -1387,7 +1513,7 @@ function saveCurrent(){
 
     win:0,
 
-    prize:''
+    prize:'未验证'
 
   };
 
@@ -1407,6 +1533,7 @@ function saveCurrent(){
   selectedBack=[];
 
   buildWheels();
+
   renderAll();
 
   $('spinBtn').textContent=
@@ -1416,7 +1543,7 @@ function saveCurrent(){
 
 
 /* =========================
-   自动格式化号码
+   输入号码
 ========================= */
 
 function normalizeNumberInput(value){
@@ -1427,13 +1554,6 @@ function normalizeNumberInput(value){
 
   const trailingSpace=
     /\s$/.test(raw);
-
-  /*
-   * 连续输入
-   * 031218222731
-   * 自动变成
-   * 03 12 18 22 27 31
-   */
 
   if(!/\s/.test(raw)){
 
@@ -1495,14 +1615,13 @@ function normalizeNumberInput(value){
 
   }
 
-  return parts.join(' ')+
-    (trailingSpace?' ':'');
+  return (
+    parts.join(' ')+
+    (trailingSpace?' ':'')
+  );
+
 }
 
-
-/* =========================
-   解析手动号码
-========================= */
 
 function parseManualNumbers(
   value,
@@ -1532,8 +1651,8 @@ function parseManualNumbers(
   if(
     nums.some(
       n=>
-        !Number.isInteger(n) ||
-        n<1 ||
+        !Number.isInteger(n)||
+        n<1||
         n>max
     )
   ){
@@ -1546,7 +1665,9 @@ function parseManualNumbers(
 
   }
 
-  if(new Set(nums).size!==nums.length){
+  if(
+    new Set(nums).size!==nums.length
+  ){
 
     return {
       ok:false,
@@ -1564,14 +1685,12 @@ function parseManualNumbers(
 }
 
 
-/* =========================
-   输入格式化
-========================= */
-
 function formatNumberInput(input){
 
   input.value=
-    normalizeNumberInput(input.value);
+    normalizeNumberInput(
+      input.value
+    );
 
 }
 
@@ -1580,8 +1699,9 @@ function formatManual(input){
 
   formatNumberInput(input);
 
-  if($('manualResult'))
+  if($('manualResult')){
     $('manualResult').textContent='';
+  }
 
 }
 
@@ -1617,7 +1737,7 @@ function saveManual(){
 
     $('manualResult').innerHTML=
       `<span style="color:#ff6b6b">
-      前区：${f.msg}
+        前区：${f.msg}
       </span>`;
 
     return;
@@ -1628,7 +1748,7 @@ function saveManual(){
 
     $('manualResult').innerHTML=
       `<span style="color:#ff6b6b">
-      后区：${b.msg}
+        后区：${b.msg}
       </span>`;
 
     return;
@@ -1656,7 +1776,7 @@ function saveManual(){
 
     win:0,
 
-    prize:''
+    prize:'未验证'
 
   };
 
@@ -1671,15 +1791,11 @@ function saveManual(){
 
   $('manualResult').innerHTML=
     `<span style="color:#7dff9b">
-    ✅ 已保存：${formatSet(item)}
+      ✅ 已保存：${formatSet(item)}
     </span>`;
 
 }
 
-
-/* =========================
-   清空手动输入
-========================= */
 
 function clearManual(){
 
@@ -1693,15 +1809,19 @@ function clearManual(){
 
 
 /* =========================
-   随机选号
+   批量
 ========================= */
 
 function randomPick(arr,n){
 
-  return [...arr]
-    .sort(()=>Math.random()-.5)
-    .slice(0,n)
-    .sort((a,b)=>a-b);
+  return [
+    ...arr
+  ]
+  .sort(
+    ()=>Math.random()-.5
+  )
+  .slice(0,n)
+  .sort((a,b)=>a-b);
 
 }
 
@@ -1727,10 +1847,6 @@ function makeSet(){
 }
 
 
-/* =========================
-   格式化一组号码
-========================= */
-
 function formatSet(x){
 
   return `
@@ -1742,10 +1858,6 @@ function formatSet(x){
 }
 
 
-/* =========================
-   批量生成
-========================= */
-
 function batch(count){
 
   batchResults=
@@ -1754,14 +1866,7 @@ function batch(count){
       makeSet
     );
 
-  /*
-   * 每次生成新的批量号码
-   * 自动恢复折叠状态
-   */
-
   batchExpanded=false;
-
-  renderBatch();
 
   const now=
     new Date().toISOString();
@@ -1777,9 +1882,9 @@ function batch(count){
 
       type:currentType,
 
-      front:x.front,
+      front:[...x.front],
 
-      back:x.back,
+      back:[...x.back],
 
       time:now,
 
@@ -1789,7 +1894,7 @@ function batch(count){
 
       win:0,
 
-      prize:''
+      prize:'未验证'
 
     });
 
@@ -1800,39 +1905,43 @@ function batch(count){
 
   saveData();
 
+  renderBatch();
   renderHistory();
 
 }
 
 
-/* =========================
-   批量显示
-   超过5组自动折叠
-========================= */
+function toggleBatch(){
+
+  batchExpanded=
+    !batchExpanded;
+
+  renderBatch();
+
+}
+
 
 function renderBatch(){
 
-  const list=$('batchList');
+  const list=
+    $('batchList');
 
   if(!batchResults.length){
 
-    list.innerHTML='暂无结果';
+    list.innerHTML=
+      '暂无结果';
 
     return;
 
   }
 
-  const showAll=
-    batchExpanded ||
-    batchResults.length<=5;
-
-  const visible=
-    showAll
+  const showArr=
+    batchExpanded
       ?batchResults
       :batchResults.slice(0,5);
 
   list.innerHTML=
-    visible.map((x,i)=>`
+    showArr.map((x,i)=>`
 
       <div class="history-item">
 
@@ -1842,7 +1951,8 @@ function renderBatch(){
 
         <button
           class="small-btn"
-          onclick="favSet(${i})">
+          onclick="favSet(${i})"
+        >
           ⭐
         </button>
 
@@ -1855,18 +1965,14 @@ function renderBatch(){
     list.innerHTML+=`
 
       <button
-        class="fold-btn"
-        onclick="
-          batchExpanded=!batchExpanded;
-          renderBatch();
-        ">
-
+        class="expand-btn"
+        onclick="toggleBatch()"
+      >
         ${
-          showAll
-            ?'▲ 收起号码'
-            :'▼ 展开全部（共 '+batchResults.length+' 组）'
+          batchExpanded
+            ?'▲ 收起'
+            :`▼ 展开全部 ${batchResults.length} 组`
         }
-
       </button>
 
     `;
@@ -1917,17 +2023,19 @@ function copyCurrent(){
   }
 
   const t=
-    (currentType==='ssq'
-      ?'双色球：'
-      :'大乐透：')+
+    (
+      currentType==='ssq'
+        ?'双色球：'
+        :'大乐透：'
+    )+
     formatSet({
       front:selectedFront,
       back:selectedBack
     });
 
-  copyText(t).then(()=>{
-    alert('已复制\n'+t);
-  });
+  copyText(t).then(
+    ()=>alert('已复制\n'+t)
+  );
 
 }
 
@@ -1950,13 +2058,9 @@ function copyBatch(){
       )
       .join('\n');
 
-  copyText(text).then(()=>{
-
-    alert(
-      '已复制全部，每组一行'
-    );
-
-  });
+  copyText(text).then(
+    ()=>alert('已复制全部，每组一行')
+  );
 
 }
 
@@ -1984,9 +2088,11 @@ function saveFavorite(
 
     back:[...back],
 
-    note:note||'未命名',
+    note:
+      note||'未命名',
 
-    time:new Date().toISOString()
+    time:
+      new Date().toISOString()
 
   });
 
@@ -2002,7 +2108,8 @@ function saveFavorite(
 
 function favSet(i){
 
-  const x=batchResults[i];
+  const x=
+    batchResults[i];
 
   if(!x)return;
 
@@ -2027,7 +2134,8 @@ function favSet(i){
 
 function favHistory(i){
 
-  const h=history[i];
+  const h=
+    history[i];
 
   if(!h)return;
 
@@ -2067,7 +2175,7 @@ function renderFavorites(){
           <span class="history-text">
 
             <span class="fav">
-              ⭐ ${escapeHtml(x.note)}
+              ⭐ ${x.note}
             </span>
 
             <br>
@@ -2078,15 +2186,15 @@ function renderFavorites(){
 
           <button
             class="small-btn"
-            onclick="copyText(
-              '${currentType==='ssq'?'双色球：':'大乐透：'}${formatSet(x)}'
-            )">
+            onclick="copyText('${currentType==='ssq'?'双色球：':'大乐透：'}${formatSet(x)}')"
+          >
             复制
           </button>
 
           <button
             class="small-btn"
-            onclick="delFav('${x.id}')">
+            onclick="delFav('${x.id}')"
+          >
             删除
           </button>
 
@@ -2114,39 +2222,26 @@ function delFav(id){
 
 
 /* =========================
-   HTML安全处理
-========================= */
-
-function escapeHtml(str){
-
-  return String(str||'')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#039;');
-
-}
-
-
-/* =========================
-   日期范围
+   历史范围
 ========================= */
 
 function getRangeStart(range){
 
-  const now=new Date();
+  const now=
+    new Date();
 
   now.setHours(
     0,0,0,0
   );
 
-  if(range==='today')
+  if(range==='today'){
     return now;
+  }
 
   if(range==='yesterday'){
 
-    const d=new Date(now);
+    const d=
+      new Date(now);
 
     d.setDate(
       d.getDate()-1
@@ -2158,7 +2253,8 @@ function getRangeStart(range){
 
   if(range==='7d'){
 
-    const d=new Date(now);
+    const d=
+      new Date(now);
 
     d.setDate(
       d.getDate()-6
@@ -2186,9 +2282,11 @@ function getRangeStart(range){
 function inSelectedRange(time){
 
   const range=
-    $('historyRange')?.value||'today';
+    $('historyRange')?.value||
+    'today';
 
-  const d=new Date(time);
+  const d=
+    new Date(time);
 
   const start=
     getRangeStart(range);
@@ -2214,7 +2312,7 @@ function inSelectedRange(time){
 function historyMatches(h){
 
   if(
-    h.type!==currentType ||
+    h.type!==currentType||
     !inSelectedRange(h.time)
   ){
 
@@ -2223,8 +2321,10 @@ function historyMatches(h){
   }
 
   const q=
-    ($('historySearch')?.value||'')
-      .replace(/\D/g,'');
+    (
+      $('historySearch')?.value||
+      ''
+    ).replace(/\D/g,'');
 
   if(!q)return true;
 
@@ -2233,21 +2333,10 @@ function historyMatches(h){
       ...(h.front||[]),
       ...(h.back||[])
     ]
-      .map(pad)
-      .join('');
+    .map(pad)
+    .join('');
 
   return nums.includes(q);
-
-}
-
-
-/* =========================
-   历史折叠控制
-========================= */
-
-function resetHistoryFold(){
-
-  historyExpanded=false;
 
 }
 
@@ -2272,7 +2361,8 @@ function money(v){
 
 function editHistory(i){
 
-  const h=history[i];
+  const h=
+    history[i];
 
   if(!h)return;
 
@@ -2308,31 +2398,49 @@ function editHistory(i){
       Number(win)||0
     );
 
+  if(
+    h.win>0 &&
+    (!h.prize||h.prize==='未中奖')
+  ){
+
+    h.prize='已中奖';
+
+  }
+
+  if(
+    h.win===0 &&
+    h.prize==='已中奖'
+  ){
+
+    h.prize='未中奖';
+
+  }
+
   saveData();
 
+  loadData();
+
   renderAll();
+
+  alert(
+    `已保存\n\n`+
+    `花费：${money(h.spend)}\n`+
+    `中奖：${money(h.win)}`
+  );
 
 }
 
 
 /* =========================
-   删除历史
+   历史删除
 ========================= */
 
 function delHistory(i){
 
-  const h=history[i];
+  if(!history[i])return;
 
-  if(!h)return;
-
-  if(
-    !confirm(
-      '确定删除这组历史记录吗？'
-    )
-  ){
-
+  if(!confirm('确定删除这组记录吗？')){
     return;
-
   }
 
   history.splice(i,1);
@@ -2345,62 +2453,21 @@ function delHistory(i){
 
 
 /* =========================
-   复制当前历史
+   历史展开收缩
 ========================= */
 
-function copyFilteredHistory(){
+function toggleHistory(){
 
-  const arr=
-    history.filter(historyMatches);
+  historyExpanded=
+    !historyExpanded;
 
-  if(!arr.length){
-
-    alert('当前没有可复制的记录');
-
-    return;
-
-  }
-
-  const out=
-    arr.map(
-      (h,i)=>
-        `${i+1}. ${formatSet(h)}`
-    ).join('\n');
-
-  copyText(out).then(()=>{
-
-    alert(
-      '已复制，每组一行'
-    );
-
-  });
-
-}
-
-
-function copyHistory(i){
-
-  const h=history[i];
-
-  if(!h)return;
-
-  const text=
-    formatSet(h);
-
-  copyText(text).then(()=>{
-
-    alert(
-      '已复制\n'+text
-    );
-
-  });
+  renderHistory();
 
 }
 
 
 /* =========================
    历史显示
-   超过5组自动折叠
 ========================= */
 
 function renderHistory(){
@@ -2426,42 +2493,22 @@ function renderHistory(){
 
   }
 
-  const showAll=
-    historyExpanded ||
-    arr.length<=5;
-
-  const visible=
-    showAll
+  const showArr=
+    historyExpanded
       ?arr
       :arr.slice(0,5);
 
   $('historyList').innerHTML=
-    visible.map(h=>{
+    showArr.map(h=>{
 
       const globalIndex=
         history.indexOf(h);
 
       const prize=
-        h.prize
-          ?` · ${escapeHtml(h.prize)}`
+        h.prize&&
+        h.prize!=='未验证'
+          ?` · ${h.prize}`
           :'';
-
-      const time=
-        new Date(h.time)
-          .toLocaleString(
-            'zh-CN',
-            {
-              month:'2-digit',
-              day:'2-digit',
-              hour:'2-digit',
-              minute:'2-digit'
-            }
-          );
-
-      const spend=
-        h.spend==null
-          ?2
-          :h.spend;
 
       const win=
         Number(h.win||0);
@@ -2472,26 +2519,38 @@ function renderHistory(){
 
           <span class="history-text">
 
-            ${time}
-            　
-            ${formatSet(h)}
+            ${new Date(h.time).toLocaleString(
+              'zh-CN',
+              {
+                month:'2-digit',
+                day:'2-digit',
+                hour:'2-digit',
+                minute:'2-digit'
+              }
+            )}
+
+           　${formatSet(h)}
 
             <br>
 
             <span style="color:#888">
 
-              花费 ${money(spend)}
+              花费
+              ${money(
+                h.spend==null
+                  ?2
+                  :h.spend
+              )}
 
               ·
 
-              <span style="${
-                win>0
-                  ?'color:#ffd700;font-weight:700'
-                  :''
-              }">
-
+              <span
+                style="
+                  color:${win>0?'#ffd700':'#888'};
+                  font-weight:${win>0?'800':'400'}
+                "
+              >
                 中奖 ${money(win)}
-
               </span>
 
               ${prize}
@@ -2502,25 +2561,29 @@ function renderHistory(){
 
           <button
             class="small-btn"
-            onclick="copyHistory(${globalIndex})">
+            onclick="copyHistory(${globalIndex})"
+          >
             📋
           </button>
 
           <button
             class="small-btn"
-            onclick="editHistory(${globalIndex})">
+            onclick="editHistory(${globalIndex})"
+          >
             ✏️
           </button>
 
           <button
             class="small-btn"
-            onclick="favHistory(${globalIndex})">
+            onclick="favHistory(${globalIndex})"
+          >
             ⭐
           </button>
 
           <button
             class="small-btn"
-            onclick="delHistory(${globalIndex})">
+            onclick="delHistory(${globalIndex})"
+          >
             删
           </button>
 
@@ -2535,18 +2598,14 @@ function renderHistory(){
     $('historyList').innerHTML+=`
 
       <button
-        class="fold-btn"
-        onclick="
-          historyExpanded=!historyExpanded;
-          renderHistory();
-        ">
-
+        class="expand-btn"
+        onclick="toggleHistory()"
+      >
         ${
-          showAll
+          historyExpanded
             ?'▲ 收起历史记录'
-            :'▼ 展开全部（共 '+arr.length+' 组）'
+            :`▼ 展开全部 ${arr.length} 组`
         }
-
       </button>
 
     `;
@@ -2560,8 +2619,53 @@ function renderHistory(){
 }
 
 
+function copyHistory(i){
+
+  const h=
+    history[i];
+
+  if(!h)return;
+
+  const t=
+    formatSet(h);
+
+  copyText(t).then(
+    ()=>alert('已复制\n'+t)
+  );
+
+}
+
+
+function copyFilteredHistory(){
+
+  const arr=
+    history.filter(
+      historyMatches
+    );
+
+  if(!arr.length){
+
+    alert('当前没有可复制的记录');
+
+    return;
+
+  }
+
+  const out=
+    arr.map(
+      (h,i)=>
+        `${i+1}. ${formatSet(h)}`
+    ).join('\n');
+
+  copyText(out).then(
+    ()=>alert('已复制，每组一行')
+  );
+
+}
+
+
 /* =========================
-   今日账本
+   今日金额
 ========================= */
 
 function updateTodayMoney(){
@@ -2570,10 +2674,10 @@ function updateTodayMoney(){
     new Date().toDateString();
 
   const arr=
-    history.filter(h=>
-      h.type===currentType &&
-      new Date(h.time)
-        .toDateString()===todayKey
+    history.filter(
+      h=>
+        h.type===currentType&&
+        new Date(h.time).toDateString()===todayKey
     );
 
   const spend=
@@ -2602,14 +2706,13 @@ function updateTodayMoney(){
   if($('todayDate')){
 
     $('todayDate').textContent=
-      new Date()
-        .toLocaleDateString(
-          'zh-CN',
-          {
-            month:'2-digit',
-            day:'2-digit'
-          }
-        );
+      new Date().toLocaleDateString(
+        'zh-CN',
+        {
+          month:'2-digit',
+          day:'2-digit'
+        }
+      );
 
   }
 
@@ -2630,8 +2733,14 @@ function updateTodayMoney(){
   if($('todayProfit')){
 
     $('todayProfit').textContent=
-      (profit>=0?'+':'-')+
-      money(Math.abs(profit));
+      (
+        profit>=0
+          ?'+'
+          :'-'
+      )+
+      money(
+        Math.abs(profit)
+      );
 
     $('todayProfit').style.color=
       profit>=0
@@ -2644,23 +2753,28 @@ function updateTodayMoney(){
 
 
 /* =========================
-   周期统计
+   周/月统计
 ========================= */
 
-function periodStats(start,end){
+function periodStats(
+  start,
+  end
+){
 
   const arr=
     history.filter(h=>{
 
-      if(h.type!==currentType)
+      if(h.type!==currentType){
         return false;
+      }
 
       const d=
         new Date(h.time);
 
-      return
-        (!start||d>=start) &&
-        (!end||d<end);
+      return (
+        (!start||d>=start)&&
+        (!end||d<end)
+      );
 
     });
 
@@ -2694,21 +2808,20 @@ function periodStats(start,end){
 }
 
 
-/* =========================
-   数据统计
-========================= */
-
 function updateStats(){
 
-  const now=new Date();
+  const now=
+    new Date();
 
-  const day=new Date(now);
+  const day=
+    new Date(now);
 
   day.setHours(
     0,0,0,0
   );
 
-  const week=new Date(day);
+  const week=
+    new Date(day);
 
   week.setDate(
     week.getDate()-
@@ -2748,16 +2861,28 @@ function updateStats(){
   if($('statWeekProfit')){
 
     $('statWeekProfit').textContent=
-      (w.profit>=0?'+':'-')+
-      money(Math.abs(w.profit));
+      (
+        w.profit>=0
+          ?'+'
+          :'-'
+      )+
+      money(
+        Math.abs(w.profit)
+      );
 
   }
 
   if($('statMonthProfit')){
 
     $('statMonthProfit').textContent=
-      (m.profit>=0?'+':'-')+
-      money(Math.abs(m.profit));
+      (
+        m.profit>=0
+          ?'+'
+          :'-'
+      )+
+      money(
+        Math.abs(m.profit)
+      );
 
   }
 
@@ -2771,11 +2896,14 @@ function updateStats(){
 function updateNumberSearch(){
 
   const q=
-    ($('numberSearch')?.value||'')
-      .replace(/\D/g,'');
+    (
+      $('numberSearch')?.value||
+      ''
+    ).replace(/\D/g,'');
 
-  if(!$('numberSearchResult'))
+  if(!$('numberSearchResult')){
     return;
+  }
 
   if(!q){
 
@@ -2787,35 +2915,39 @@ function updateNumberSearch(){
   }
 
   const hits=
-    history.filter(h=>
-      h.type===currentType &&
-      [
-        ...(h.front||[]),
-        ...(h.back||[])
-      ].some(
-        n=>
-          pad(n)===
-          q.padStart(2,'0')
-      )
+    history.filter(
+      h=>
+        h.type===currentType&&
+        [
+          ...(h.front||[]),
+          ...(h.back||[])
+        ].some(
+          n=>
+            pad(n)===q.padStart(2,'0')
+        )
     );
 
   const exactSet=
-    history.filter(h=>
-      h.type===currentType &&
-      [
-        ...(h.front||[]),
-        ...(h.back||[])
-      ]
+    history.filter(
+      h=>
+        h.type===currentType&&
+        [
+          ...(h.front||[]),
+          ...(h.back||[])
+        ]
         .map(pad)
         .join('')
         .includes(q)
     );
 
   $('numberSearchResult').innerHTML=
-
-    `号码 <b>${q.padStart(2,'0')}</b>：
-    单号出现 ${hits.length} 次；
-    包含该数字组合的记录 ${exactSet.length} 组`;
+    `
+      号码
+      <b>${q.padStart(2,'0')}</b>：
+      单号出现 ${hits.length} 次；
+      包含该数字组合的记录
+      ${exactSet.length} 组
+    `;
 
 }
 
@@ -2861,129 +2993,72 @@ function verifyWin(){
       .filter(Number.isFinite);
 
   if(
-    of.length!==needFront ||
+    of.length!==needFront||
     ob.length!==needBack
   ){
 
     $('verifyResult').innerHTML=
-      `<span style="color:#ff6b6b">
-      ${
-        currentType==='ssq'
-          ?'双色球需要前6个号码 + 后1个号码'
-          :'大乐透需要前5个号码 + 后2个号码'
-      }
-      </span>`;
+      `
+        <span style="color:#ff6b6b">
+          ${
+            currentType==='ssq'
+              ?'双色球需要前6后1'
+              :'大乐透需要前5后2'
+          }
+        </span>
+      `;
 
     return;
 
   }
-
-  if(
-    new Set(of).size!==of.length ||
-    new Set(ob).size!==ob.length
-  ){
-
-    $('verifyResult').innerHTML=
-      '<span style="color:#ff6b6b">开奖号码不能重复</span>';
-
-    return;
-
-  }
-
-  if(
-    of.some(
-      n=>
-        !Number.isInteger(n)||
-        n<1||
-        n>frontAll.length
-    )||
-    ob.some(
-      n=>
-        !Number.isInteger(n)||
-        n<1||
-        n>backAll.length
-    )
-  ){
-
-    $('verifyResult').innerHTML=
-      '<span style="color:#ff6b6b">开奖号码超出范围</span>';
-
-    return;
-
-  }
-
-
-  /* 双色球奖级 */
 
   const prizeSSQ=(f,b)=>{
 
-    if(f===6&&b===1)
-      return '一等奖';
-
-    if(f===6)
-      return '二等奖';
-
-    if(f===5&&b===1)
-      return '三等奖';
+    if(f===6&&b===1)return '一等奖';
+    if(f===6)return '二等奖';
+    if(f===5&&b===1)return '三等奖';
 
     if(
       f===5||
       (f===4&&b===1)
-    )
-      return '四等奖';
+    )return '四等奖';
 
     if(
       f===4||
       (f===3&&b===1)
-    )
-      return '五等奖';
+    )return '五等奖';
 
-    if(b===1)
-      return '六等奖';
+    if(b===1)return '六等奖';
 
     return '未中奖';
 
   };
 
 
-  /* 大乐透奖级 */
-
   const prizeDLT=(f,b)=>{
 
-    if(f===5&&b===2)
-      return '一等奖';
+    if(f===5&&b===2)return '一等奖';
+    if(f===5&&b===1)return '二等奖';
+    if(f===5)return '三等奖';
 
-    if(f===5&&b===1)
-      return '二等奖';
+    if(f===4&&b===2)return '四等奖';
+    if(f===4&&b===1)return '五等奖';
 
-    if(f===5)
-      return '三等奖';
+    if(f===3&&b===2)return '六等奖';
 
-    if(f===4&&b===2)
-      return '四等奖';
-
-    if(f===4&&b===1)
-      return '五等奖';
-
-    if(f===3&&b===2)
-      return '六等奖';
-
-    if(f===4)
-      return '七等奖';
+    if(f===4)return '七等奖';
 
     if(
       (f===3&&b===1)||
       (f===2&&b===2)
-    )
-      return '八等奖';
+    )return '八等奖';
 
     if(
       f===3||
       b===2||
       (f===2&&b===1)||
       (f===1&&b===2)
-    )
-      return '九等奖';
+    )return '九等奖';
 
     return '未中奖';
 
@@ -2998,54 +3073,44 @@ function verifyWin(){
   if(!arr.length){
 
     $('verifyResult').innerHTML=
-      '<span style="color:#aaa">暂无该玩法的历史记录</span>';
+      `
+        <span style="color:#aaa">
+          暂无该玩法的历史记录
+        </span>
+      `;
 
     return;
 
   }
 
 
+  const inputAmount=
+    Math.max(
+      0,
+      Number(
+        $('winAmount').value||0
+      )
+    );
+
+
   /*
-   * 本次填写的中奖金额
-   *
-   * 这里把它当作：
-   * “本次全部中奖记录的总中奖金额”
-   *
-   * 如果中奖2注，输入16，
-   * 系统只记录16，不会变成32。
+   * 先计算中奖结果
    */
-
-  const rawWin=
-    $('winAmount').value.trim();
-
-  const winInput=
-    rawWin===''
-      ?null
-      :Math.max(
-          0,
-          Number(rawWin)||0
-        );
-
-
-  const result=[];
-  const winningRecords=[];
-
+  let winRecords=[];
 
   arr.forEach(h=>{
 
     const fh=
       (h.front||[])
         .filter(
-          n=>of.includes(Number(n))
-        )
-        .length;
+          n=>of.includes(n)
+        ).length;
 
     const bh=
       (h.back||[])
         .filter(
-          n=>ob.includes(Number(n))
-        )
-        .length;
+          n=>ob.includes(n)
+        ).length;
 
     const prize=
       currentType==='ssq'
@@ -3055,238 +3120,288 @@ function verifyWin(){
     h.prize=prize;
 
     if(h.spend==null){
-
       h.spend=2;
-
     }
 
-    if(prize==='未中奖'){
+    if(prize!=='未中奖'){
 
-      h.win=0;
+      winRecords.push(h);
 
     }else{
 
-      winningRecords.push(h);
+      h.win=0;
 
     }
-
-    result.push({
-      h,
-      prize,
-      fh,
-      bh
-    });
 
   });
 
 
   /*
-   * 如果填写了中奖金额
-   *
-   * 先清空本玩法旧金额
-   * 防止重复验证时金额叠加
+   * 有中奖但没有金额
    */
+  if(
+    winRecords.length>0&&
+    inputAmount<=0
+  ){
 
-  if(winInput!==null){
+    const names=
+      winRecords
+        .map(
+          (h,i)=>
+            `${i+1}. ${formatSet(h)} → ${h.prize}`
+        )
+        .join('<br>');
 
-    arr.forEach(h=>{
+    $('verifyResult').innerHTML=
+      `
+        <div class="verify-summary">
 
-      h.win=0;
+          <span style="
+            color:#ffd700;
+            font-weight:800
+          ">
+            🎉 发现 ${winRecords.length} 注中奖！
+          </span>
 
-    });
+          <br><br>
 
-    if(winningRecords.length>0){
+          ${names}
 
-      /*
-       * 总金额只放在第一条中奖记录
-       * 防止重复统计
-       */
+          <br><br>
 
-      winningRecords[0].win=
-        winInput;
+          <span style="color:#ff8fa3">
+            ⚠️ 请在「中奖金额」输入实际中奖金额，
+            然后再次点击验证。
+          </span>
 
-    }
+        </div>
+      `;
+
+    /*
+     * 只保存奖级，不保存错误金额
+     */
+    saveData();
+
+    return;
 
   }
 
 
+  /*
+   * 有中奖金额
+   */
+  if(winRecords.length===1){
+
+    /*
+     * 只有一注中奖
+     * 金额直接保存
+     */
+    winRecords[0].win=
+      Number(
+        inputAmount.toFixed(2)
+      );
+
+  }else if(winRecords.length>1){
+
+    /*
+     * 如果一次有多注中奖，
+     * 输入的是这次中奖总金额。
+     *
+     * 为避免总金额被重复计算，
+     * 平均分配到中奖记录。
+     */
+    const each=
+      inputAmount/
+      winRecords.length;
+
+    winRecords.forEach(h=>{
+
+      h.win=
+        Number(
+          each.toFixed(2)
+        );
+
+    });
+
+  }
+
+
+  /*
+   * 真正保存
+   */
   saveData();
+
+  /*
+   * 再读取一次，确认 localStorage 已写入
+   */
+  loadData();
 
   renderAll();
 
-  updateTodayMoney();
-  updateStats();
-  updateNumberSearch();
 
-
-  const totalRecordedWin=
-    arr.reduce(
+  const totalWin=
+    winRecords.reduce(
       (sum,h)=>
         sum+
         Number(h.win||0),
       0
     );
 
-  const wins=
-    winningRecords.length;
-
 
   const lines=
-    result.map(item=>{
-
-      const h=item.h;
-      const p=item.prize;
+    arr.map(h=>{
 
       const hs=
         (h.front||[])
-          .map(n=>
-            of.includes(Number(n))
-              ?`<span class="hit">${pad(n)}</span>`
-              :pad(n)
+          .map(
+            n=>
+              of.includes(n)
+                ?`<span class="hit">${pad(n)}</span>`
+                :pad(n)
           )
           .join(' ');
 
       const hb=
         (h.back||[])
-          .map(n=>
-            ob.includes(Number(n))
-              ?`<span class="hit">${pad(n)}</span>`
-              :pad(n)
+          .map(
+            n=>
+              ob.includes(n)
+                ?`<span class="hit">${pad(n)}</span>`
+                :pad(n)
           )
           .join(' ');
 
-      const amount=
-        Number(h.win||0)>0
-          ?` · 中奖 ${money(h.win)}`
-          :'';
+      const isWin=
+        h.prize!=='未中奖';
 
       return `
         ${hs} + ${hb}
         →
         <b style="
-          color:${p==='未中奖'?'#999':'#ffd700'}
+          color:${isWin?'#ffd700':'#777'}
         ">
-          ${p}
+          ${h.prize}
         </b>
-        ${amount}
+
+        ${
+          isWin
+            ?`
+              ·
+              <span style="
+                color:#ffd700;
+                font-weight:800
+              ">
+                中奖 ${money(h.win)}
+              </span>
+            `
+            :''
+        }
       `;
 
     });
 
 
-  let amountText='';
+  $('verifyResult').innerHTML=
+    `
+      <div class="verify-summary">
 
+        <span style="
+          color:#7dff9b;
+          font-weight:800
+        ">
+          ✅ 验证完成
+        </span>
 
-  if(winInput!==null){
+        <br>
 
-    amountText=
-      `<br>
-      💰 本次记录中奖金额：
-      <b style="color:#ffd700">
-        ${money(totalRecordedWin)}
-      </b>`;
+        共验证 ${arr.length} 注，
 
-  }else{
+        <span style="
+          color:#ffd700;
+          font-weight:800
+        ">
+          中奖 ${winRecords.length} 注
+        </span>
 
-    amountText=
-      `<br>
-      <span style="color:#aaa">
-        未填写中奖金额，中奖金额保持为当前记录值。
-      </span>`;
+        <br>
 
-  }
+        本次中奖金额：
 
+        <span style="
+          color:#ffd700;
+          font-weight:900
+        ">
+          ${money(totalWin)}
+        </span>
 
-  $('verifyResult').innerHTML=`
+        <br>
 
-    <div style="
-      color:#7dff9b;
-      font-weight:700
-    ">
-      ✅ 开奖验证完成
-    </div>
+        <span style="color:#7dff9b">
+          💾 中奖金额已经保存到本机记录
+        </span>
 
-    <div style="margin-top:5px">
+      </div>
 
-      共验证 ${arr.length} 组，
-
-      <span style="
-        color:#ffd700;
-        font-weight:800
+      <div style="
+        margin-top:10px;
+        padding-top:8px;
+        border-top:1px solid #ffffff15;
+        line-height:1.8
       ">
-        中奖 ${wins} 组
-      </span>
-
-    </div>
-
-    ${amountText}
-
-    <div style="
-      margin-top:8px;
-      padding:8px;
-      background:#0004;
-      border-radius:8px;
-      color:#ccc;
-    ">
-
-      今日账本已同步：
-
-      <br>
-
-      💰 今日中奖：
-      <b style="color:#ffd700">
-        ${$('todayWin').textContent}
-      </b>
-
-      <br>
-
-      📊 今日盈亏：
-      <b style="
-        color:${
-          totalRecordedWin>=0
-            ?'#ffd700'
-            :'#ff8fa3'
-        }
-      ">
-        ${$('todayProfit').textContent}
-      </b>
-
-    </div>
-
-    <div style="margin-top:10px">
-
-      ${lines.join('<br>')||'暂无该玩法记录'}
-
-    </div>
-
-  `;
+        ${lines.join('<br>')||'暂无该玩法记录'}
+      </div>
+    `;
 
 
   /*
-   * 清空金额输入框
-   * 防止下一次验证误用旧金额
+   * 防止下一次误用上一次金额
    */
-
   $('winAmount').value='';
+
+  updateTodayMoney();
+  updateStats();
+  showStatsIfOpen();
 
 }
 
 
 /* =========================
-   综合统计
+   统计弹窗
 ========================= */
+
+function showStatsIfOpen(){
+
+  const modal=
+    $('statsModal');
+
+  if(
+    modal&&
+    modal.classList.contains('show')
+  ){
+
+    showStats();
+
+  }
+
+}
+
 
 function showStats(){
 
-  const modal=$('statsModal');
-  const chart=$('statsChart');
+  const modal=
+    $('statsModal');
+
+  const chart=
+    $('statsChart');
 
   if(!modal||!chart)return;
 
   const range=
-    $('statsRange')?.value||'all';
+    $('statsRange')?.value||
+    'all';
 
-  const now=new Date();
+  const now=
+    new Date();
 
   now.setHours(
     0,0,0,0
@@ -3296,11 +3411,13 @@ function showStats(){
 
   if(range==='today'){
 
-    start=new Date(now);
+    start=
+      new Date(now);
 
   }else if(range==='7d'){
 
-    start=new Date(now);
+    start=
+      new Date(now);
 
     start.setDate(
       start.getDate()-6
@@ -3324,7 +3441,10 @@ function showStats(){
       const d=
         new Date(h.time);
 
-      return !start||d>=start;
+      return (
+        !start||
+        d>=start
+      );
 
     });
 
@@ -3369,12 +3489,7 @@ function showStats(){
 
       winCount:
         arr.filter(
-          h=>
-            Number(h.win||0)>0 ||
-            (
-              h.prize &&
-              h.prize!=='未中奖'
-            )
+          h=>Number(h.win||0)>0
         ).length
 
     };
@@ -3442,11 +3557,10 @@ function showStats(){
     Math.max(
       1,
       ...rows.map(
-        r=>
-          Math.max(
-            r.spend,
-            r.win
-          )
+        r=>Math.max(
+          r.spend,
+          r.win
+        )
       )
     );
 
@@ -3502,10 +3616,9 @@ function showStats(){
             return `
 
               <tr style="
-                ${
-                  r.totalRow
-                    ?'border-top:1px solid #555;font-weight:900'
-                    :''
+                ${r.totalRow
+                  ?'border-top:1px solid #555;font-weight:900'
+                  :''
                 }
               ">
 
@@ -3519,7 +3632,9 @@ function showStats(){
                     ${r.icon}
                   </span>
 
-                  <b>${r.name}</b>
+                  <b>
+                    ${r.name}
+                  </b>
 
                 </td>
 
@@ -3597,8 +3712,8 @@ function showStats(){
               class="chart-bar"
               style="
                 width:${r.spend/max*100}%
-              ">
-            </div>
+              "
+            ></div>
 
           </div>
 
@@ -3609,16 +3724,17 @@ function showStats(){
           >
 
             <div
-              class="chart-bar"
               style="
-                width:${r.win/max*100}%;
+                height:100%;
+                border-radius:9px;
                 background:linear-gradient(
                   90deg,
                   #4cc9f0,
                   #7dff9b
-                )
-              ">
-            </div>
+                );
+                width:${r.win/max*100}%
+              "
+            ></div>
 
           </div>
 
@@ -3654,9 +3770,7 @@ function showStats(){
 
       ｜“购买”=购买注数
 
-      ｜“中奖”=中奖注数
-
-      ｜“中奖金额”=实际中奖金额
+      ｜“中奖”=实际中奖金额大于0的注数
 
       ｜数据来自本机历史记录
 
@@ -3683,7 +3797,7 @@ function closeStats(){
 
 
 /* =========================
-   导出数据
+   导出
 ========================= */
 
 function exportData(){
@@ -3703,7 +3817,6 @@ function exportData(){
 
   };
 
-
   const blob=
     new Blob(
       [
@@ -3718,7 +3831,6 @@ function exportData(){
       }
     );
 
-
   const a=
     document.createElement('a');
 
@@ -3726,9 +3838,11 @@ function exportData(){
     URL.createObjectURL(blob);
 
   a.download=
-    `彩票转盘备份_${new Date()
-      .toISOString()
-      .slice(0,10)}.json`;
+    `彩票转盘备份_${
+      new Date()
+        .toISOString()
+        .slice(0,10)
+    }.json`;
 
   a.click();
 
@@ -3740,7 +3854,7 @@ function exportData(){
 
 
 /* =========================
-   导入数据
+   导入
 ========================= */
 
 function importData(){
@@ -3753,7 +3867,6 @@ function importData(){
   input.accept=
     '.json,application/json';
 
-
   input.onchange=()=>{
 
     const f=
@@ -3761,17 +3874,17 @@ function importData(){
 
     if(!f)return;
 
-
     const r=
       new FileReader();
-
 
     r.onload=()=>{
 
       try{
 
         const d=
-          JSON.parse(r.result);
+          JSON.parse(
+            r.result
+          );
 
         if(
           !Array.isArray(d.history)||
@@ -3783,30 +3896,40 @@ function importData(){
         }
 
         history=d.history;
+
         favorites=d.favorites;
 
         /*
-         * 兼容旧数据
+         * 给旧备份补充字段
          */
+        history=
+          history.map(h=>{
 
-        history.forEach(h=>{
+            if(h.spend==null){
+              h.spend=2;
+            }
 
-          if(h.spend==null)
-            h.spend=2;
+            if(h.win==null){
+              h.win=0;
+            }
 
-          if(h.win==null)
-            h.win=0;
+            if(h.prize==null){
+              h.prize='';
+            }
 
-          if(!h.prize)
-            h.prize='';
+            return h;
 
-        });
+          });
 
         saveData();
 
+        loadData();
+
         renderAll();
 
-        alert('恢复成功');
+        alert(
+          '恢复成功'
+        );
 
       }catch(e){
 
@@ -3822,14 +3945,13 @@ function importData(){
 
   };
 
-
   input.click();
 
 }
 
 
 /* =========================
-   清空数据
+   清空
 ========================= */
 
 function clearAllData(){
@@ -3856,8 +3978,8 @@ function clearAllData(){
   favorites=[];
   batchResults=[];
 
-  batchExpanded=false;
   historyExpanded=false;
+  batchExpanded=false;
 
   renderAll();
 
@@ -3877,25 +3999,6 @@ function init(){
   arrays();
 
   loadData();
-
-  /*
-   * 兼容旧版本历史记录
-   */
-
-  history.forEach(h=>{
-
-    if(h.spend==null)
-      h.spend=2;
-
-    if(h.win==null)
-      h.win=0;
-
-    if(h.prize==null)
-      h.prize='';
-
-  });
-
-  saveData();
 
   buildWheels();
 
