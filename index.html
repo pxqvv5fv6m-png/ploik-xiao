@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0f0c29">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="彩票转盘">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>🎰 彩票转盘</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}html,body{min-height:100%;background:#0f0c29}body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff;background:linear-gradient(165deg,#0f0c29,#302b63 52%,#24243e);padding:10px;padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(28px,env(safe-area-inset-bottom))}.container{max-width:430px;margin:auto}h1{text-align:center;font-size:18px;margin:4px 0 10px}.tabs,.mode-row,.btn-row,.grid2{display:flex;gap:8px}.grid2{display:grid;grid-template-columns:1fr 1fr}button{border:0;border-radius:11px;padding:11px 8px;font-size:14px;font-weight:650;cursor:pointer}button:disabled{opacity:.42}.tab,.mode{flex:1;background:#ffffff14;color:#bbb}.active{background:linear-gradient(135deg,#e94560,#ff6b6b)!important;color:#fff!important}.mode-row{margin:9px 0}.mode{font-size:12px;padding:8px}.info{text-align:center;font-size:12px;color:#aaa;margin:7px 0}.wheel-box{position:relative;width:300px;height:300px;margin:0 auto 10px}.pointer-outer{position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:26px solid #ffd700;z-index:60;filter:drop-shadow(0 2px 3px #000)}.pointer-inner{position:absolute;top:58px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:18px solid #00e5ff;z-index:55;filter:drop-shadow(0 2px 3px #000)}.outer-wheel{position:absolute;inset:0;width:300px;height:300px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 3px #e94560,0 6px 20px #0006;background:#1a1a2e;overflow:hidden}.inner-wheel{position:absolute;top:70px;left:70px;width:160px;height:160px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 3px #4cc9f0,0 4px 15px #0006;background:#16213e;overflow:hidden;z-index:10}.num{position:absolute;top:50%;left:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}.outer-wheel .num{width:26px;height:26px;margin:-13px;border-radius:50%;background:#e94560;color:#fff}.inner-wheel .num{width:24px;height:24px;margin:-12px;border-radius:50%;background:#4cc9f0;color:#0f0c29}.center-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#fff;border:2px solid #333;color:#333;z-index:20;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}.balls{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:38px;margin-bottom:4px}.ball{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}.red{background:linear-gradient(135deg,#e94560,#ff6b6b)}.blue{background:linear-gradient(135deg,#0f3460,#4cc9f0)}.status{text-align:center;font-size:13px;color:#ffd700;min-height:20px;margin:8px 0}.spin-btn{flex:1;background:linear-gradient(135deg,#e94560,#ff6b6b);color:#fff}.copy-btn{flex:1;background:linear-gradient(135deg,#4cc9f0,#4895ef);color:#0f0c29}.clear-btn{flex:.7;background:#ffffff1f;color:#ccc}.box{background:#0004;border-radius:12px;padding:10px;margin:10px 0}.box-title{font-size:12px;color:#aaa;margin-bottom:7px;display:flex;justify-content:space-between}.gold{color:#ffd700}input,select{width:100%;border:1px solid #ffffff25;background:#0d0b20;color:#fff;border-radius:10px;padding:10px 11px;font-size:14px;outline:none;margin:4px 0}select{appearance:auto}.small-btn{padding:5px 7px;border-radius:7px;background:#ffffff14;color:#ccc;font-size:11px}.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.stat-card{background:#0004;border-radius:10px;padding:9px;text-align:center}.stat-card .label{font-size:10px;color:#999}.stat-card .value{font-size:17px;font-weight:800;margin-top:3px}.search-result{font-size:12px;color:#ccc;line-height:1.7;margin-top:7px}.history-item,.fav-item{font-size:11px;padding:6px 2px;border-bottom:1px solid #ffffff0d;display:flex;gap:5px;align-items:center}.history-text{flex:1;min-width:0}.history-main{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.history-sub{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#888;margin-top:2px}.fav{color:#ffd700}.action{background:#ffd700;color:#333;width:100%;padding:9px}.ghost{background:#ffffff12;color:#ccc}.result{margin-top:8px;font-size:12px;line-height:1.65}.hit{color:#ffd700;font-weight:800;background:#ffd70033;padding:0 3px;border-radius:3px}.stats-modal{position:fixed;inset:0;background:#0009;z-index:9999;display:none;align-items:flex-end;justify-content:center;padding:10px}.stats-modal.show{display:flex}.stats-panel{width:min(430px,100%);max-height:82vh;overflow:auto;background:linear-gradient(165deg,#15112f,#302b63);border:1px solid #ffffff20;border-radius:16px;padding:14px;box-shadow:0 10px 40px #0008}.stats-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.stats-head b{color:#ffd700}.chart-track{height:16px;background:#ffffff12;border-radius:9px;overflow:hidden}.chart-bar{height:100%;border-radius:9px;background:linear-gradient(90deg,#e94560,#ffd700);min-width:0}.hidden{display:none!important}.tip{text-align:center;color:#666;font-size:10px;margin-top:8px;line-height:1.5}.section-btn{width:100%;margin-top:7px}.danger{background:#7f2940;color:#fff}.notice{background:#ffd70018;border:1px solid #ffd70055;border-radius:10px;padding:9px;font-size:11px;color:#ffe78a;line-height:1.55;margin:8px 0}.empty{color:#777;text-align:center;padding:8px}.collapse-btn{margin-top:6px;width:100%;padding:7px;background:#ffffff10;color:#aaa;font-size:11px}.collapsed-list .history-item:nth-child(n+6),.collapsed-list .fav-item:nth-child(n+6){display:none}
+
+.prize-count-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0 10px}.prize-count-card{background:#0005;border:1px solid #ffffff14;border-radius:9px;padding:7px 3px;text-align:center}.prize-count-card b{display:block;font-size:10px;color:#aaa}.prize-count-card strong{display:inline-block;font-size:19px;margin-top:2px}.prize-count-card span{font-size:9px;color:#888;margin-left:1px}.prize-count-card.first strong{color:#ffd700}.prize-count-card.second strong{color:#ff9f43}.prize-count-card.third strong{color:#7dff9b}.prize-count-card.fourth strong{color:#4cc9f0}.prize-count-card.fifth strong{color:#b98cff}.prize-count-card.sixth strong{color:#ff6fae}.prize-count-card.seventh strong{color:#ff7b5c}.prize-count-card.eighth strong{color:#36d9ff}.prize-count-card.ninth strong{color:#ffe66d}
+
+/* ===== 全屏纯烟花中奖庆典：只保留烟花 ===== */
+.celebrate-overlay{position:fixed;inset:0;background:rgba(1,0,10,.82);backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);z-index:20000;display:none;overflow:hidden;cursor:pointer}
+.celebrate-overlay.show{display:block}
+.fireworks{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.firework{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 14px currentColor,0 0 34px currentColor,0 0 60px currentColor;animation:fwCore 2.65s ease-out forwards}
+.firework .spark{position:absolute;left:50%;top:50%;width:3px;height:3px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor,0 0 14px currentColor;transform:translate(-50%,-50%) rotate(var(--angle)) translateY(8px);animation:fwSpark 2.35s cubic-bezier(.12,.7,.22,1) forwards}
+.firework.first .spark{width:4px;height:4px;box-shadow:0 0 10px currentColor,0 0 18px currentColor}
+.firework.second .spark{width:3px;height:3px}
+.firework .trail{position:absolute;left:50%;top:50%;width:2px;height:var(--len);transform-origin:50% 0;transform:translate(-50%,0) rotate(var(--angle));background:linear-gradient(to bottom,currentColor,transparent);filter:drop-shadow(0 0 5px currentColor);animation:trailFade 1.9s ease-out forwards}
+.firework.first .ring,.firework.second .ring{position:absolute;left:50%;top:50%;width:20px;height:20px;border:2px solid currentColor;border-radius:50%;transform:translate(-50%,-50%) scale(.1);opacity:.9;animation:ringBurst 1.7s ease-out forwards}
+.firework.first .ring{box-shadow:0 0 14px currentColor}
+.firework.second .ring{border-style:dashed}
+@keyframes fwCore{0%{transform:scale(.04);opacity:0}9%{transform:scale(2.2);opacity:1}22%{transform:scale(1);opacity:1}100%{transform:scale(.45);opacity:0}}
+@keyframes fwSpark{0%{opacity:1;transform:translate(-50%,-50%) rotate(var(--angle)) translateY(5px) scale(.35)}55%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--angle)) translateY(var(--dist)) scale(.02)}}
+@keyframes trailFade{0%{opacity:0;height:5px}12%{opacity:1}100%{opacity:0;height:var(--len)}}
+@keyframes ringBurst{0%{opacity:.95;transform:translate(-50%,-50%) scale(.1)}100%{opacity:0;transform:translate(-50%,-50%) scale(7)}}
+</style>
+</head>
+<body><div class="container">
+<h1>🎰 彩票转盘</h1>
+<div class="tabs"><button class="tab active" id="tab-ssq" onclick="switchType('ssq')">双色球</button><button class="tab" id="tab-dlt" onclick="switchType('dlt')">大乐透</button></div>
+<div class="mode-row"><button class="mode active" id="mode-wheel" onclick="setMode('wheel')">🎡 转盘</button><button class="mode" id="mode-manual" onclick="setMode('manual')">✍️ 手动</button><button class="mode" id="mode-batch" onclick="setMode('batch')">🎲 批量</button></div>
+<section id="wheelMode"><div class="info" id="infoText"></div><div class="wheel-box"><div class="pointer-outer"></div><div class="pointer-inner"></div><div class="outer-wheel" id="outerWheel"></div><div class="inner-wheel" id="innerWheel"><div class="center-dot">中</div></div></div><div class="info">已选前区</div><div class="balls" id="frontBalls"></div><div class="info">已选后区</div><div class="balls" id="backBalls"></div><div class="status" id="statusText">点击开始转盘</div><div class="btn-row"><button class="spin-btn" id="spinBtn" onclick="doSpin()">开始转盘</button><button class="copy-btn" onclick="copyCurrent()">复制</button><button class="clear-btn" onclick="resetCurrent()">重置</button></div></section>
+<section id="manualMode" class="hidden"><div class="box"><div class="box-title"><span>✍️ 手动输入号码</span><span>输入后自动加空格</span></div><div class="tip" style="margin-bottom:8px">直接输入数字，例如 031218222731，自动变成 03 12 18 22 27 31。</div><label style="display:block;font-size:12px;color:#aaa">前区</label><input id="manualFront" type="text" inputmode="text" autocomplete="off" placeholder="双色球：03 12 18 22 27 31 / 大乐透：01 08 15 22 35" oninput="formatManual(this)"><label style="display:block;font-size:12px;color:#aaa">后区</label><input id="manualBack" type="text" inputmode="text" autocomplete="off" placeholder="双色球：07 / 大乐透：07 09" oninput="formatManual(this)"><button class="action" onclick="saveManual()">💾 保存这组号码</button><button class="ghost section-btn" onclick="clearManual()">清空重新输入</button><div class="result" id="manualResult"></div></div></section>
+<section id="batchMode" class="hidden"><div class="box"><div class="box-title"><span>批量随机选号</span><span>每组号码不重复</span></div><div class="grid2"><button class="action" onclick="batch(1)">生成 1 组</button><button class="action" onclick="batch(5)">生成 5 组</button><button class="action" onclick="batch(10)">生成 10 组</button><button class="action" onclick="batch(20)">生成 20 组</button><button class="action" onclick="batch(50)">生成 50 组</button><button class="action" onclick="batch(100)">生成 100 组</button></div></div><div class="box"><div class="box-title"><span>本次批量结果</span><button class="small-btn" onclick="copyBatch()">复制全部</button></div><div id="batchList"></div></div></section>
+<div class="box"><div class="box-title gold"><span>💰 今日账本</span><span id="todayDate"></span></div><div class="grid2" style="margin-bottom:8px"><div class="stat-card"><div class="label">今日花费</div><div id="todaySpend" class="value" style="color:#ff8fa3">¥0</div></div><div class="stat-card"><div class="label">今日赚取</div><div id="todayWin" class="value" style="color:#ffd700">¥0</div></div></div><div class="stat-card"><div class="label">今日盈亏</div><div id="todayProfit" class="value">¥0</div></div><div class="tip">固定奖级自动计算；一等奖、二等奖金额浮动，不自动估算。</div></div>
+<div class="box"><div class="box-title"><span>📜 今日/历史记录</span><span id="historyCount">0 组</span></div><div class="grid2"><select id="historyRange" onchange="renderHistory()"><option value="today">今天</option><option value="yesterday">昨天</option><option value="7d">近7天</option><option value="month">本月</option><option value="all">全部</option></select><input id="historySearch" type="text" inputmode="numeric" autocomplete="off" placeholder="搜索号码" oninput="renderHistory()"></div><div class="btn-row" style="margin-top:5px"><button class="ghost" onclick="copyFilteredHistory()">📋复制当前列表</button><button class="ghost" onclick="showStats()">📊统计</button></div><div id="historyList"></div></div>
+<div class="box"><div class="box-title gold"><span>📊 数据统计</span><span>双色球 + 大乐透</span></div><div class="stat-grid"><div class="stat-card"><div class="label">今日投入</div><div class="value" id="statTodaySpend">¥0</div></div><div class="stat-card"><div class="label">今日中奖</div><div class="value" id="statTodayWin">¥0</div></div><div class="stat-card"><div class="label">本周盈亏</div><div class="value" id="statWeekProfit">¥0</div></div><div class="stat-card"><div class="label">本月盈亏</div><div class="value" id="statMonthProfit">¥0</div></div></div><input id="numberSearch" type="text" inputmode="numeric" autocomplete="off" placeholder="🔍 查询号码，例如 03 或 03 12" oninput="updateNumberSearch()"><div class="search-result" id="numberSearchResult">输入号码即可查询出现次数</div></div>
+<div class="box"><div class="box-title gold"><span>⭐ 我的收藏</span></div><div id="favList"></div></div>
+<div class="box"><div class="box-title gold">🏆 开奖验证</div><input id="officialNumbers" type="text" inputmode="text" autocomplete="off" placeholder="直接粘贴开奖号码，系统自动识别"><div class="grid2"><input id="recordSpend" type="number" inputmode="decimal" min="0" step="2" value="2" placeholder="每组花费 ¥"><button class="ghost" onclick="clearOfficial()">清空开奖号码</button></div><button class="action" onclick="verifyWin()">🏆 验证记录并自动计算中奖金额</button><div class="result" id="verifyResult"></div></div>
+<div class="stats-modal" id="statsModal" onclick="if(event.target===this)closeStats()"><div class="stats-panel"><div class="stats-head"><b>📊 双色球 + 大乐透 综合统计</b><button class="small-btn" onclick="closeStats()">关闭</button></div><div class="grid2" style="margin-bottom:10px"><select id="statsRange" onchange="showStats()"><option value="today">今天</option><option value="7d">近7天</option><option value="month">本月</option><option value="all" selected>全部</option></select><div class="tip" style="margin:0;display:flex;align-items:center;justify-content:center">两种玩法分开统计</div></div><div id="statsChart"></div></div></div>
+<div class="box"><div class="box-title"><span>💾 数据管理</span><span>只保存在本机</span></div><div class="grid2"><button class="ghost" onclick="exportData()">📤 导出备份</button><button class="ghost" onclick="importData()">📥 恢复备份</button></div><button class="danger section-btn" onclick="clearAllData()">清空全部本机数据</button></div>
+<div class="tip">记录和收藏保存在本机浏览器。建议定期导出备份。选号为随机生成，不代表提高中奖概率。</div>
+</div>
+<script>
+const APP_VERSION='3.1.1';let currentType='ssq',mode='wheel',spinning=false,frontAll=[],backAll=[],selectedFront=[],selectedBack=[],needFront=6,needBack=1,history=[],favorites=[],batchResults=[],historyExpanded=false,batchExpanded=false;
+const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0'),allKey=n=>`lottery_wheel_v2_${n}_all`;
+function rules(){return currentType==='ssq'?{front:33,back:16,nf:6,nb:1}:{front:35,back:12,nf:5,nb:2}}
+function arrays(){let r=rules();frontAll=Array.from({length:r.front},(_,i)=>i+1);backAll=Array.from({length:r.back},(_,i)=>i+1);needFront=r.nf;needBack=r.nb}
+function loadData(){try{history=JSON.parse(localStorage.getItem(allKey('history'))||'[]');favorites=JSON.parse(localStorage.getItem(allKey('favorites'))||'[]')}catch(e){history=[];favorites=[]}}
+function saveData(){localStorage.setItem(allKey('history'),JSON.stringify(history));localStorage.setItem(allKey('favorites'),JSON.stringify(favorites))}
+function switchType(t){if(spinning)return;currentType=t;arrays();selectedFront=[];selectedBack=[];batchResults=[];historyExpanded=false;batchExpanded=false;$('tab-ssq').classList.toggle('active',t==='ssq');$('tab-dlt').classList.toggle('active',t==='dlt');loadData();buildWheels();renderAll();clearOfficial();}
+function setMode(m){mode=m;$('mode-wheel').classList.toggle('active',m==='wheel');$('mode-manual').classList.toggle('active',m==='manual');$('mode-batch').classList.toggle('active',m==='batch');$('wheelMode').classList.toggle('hidden',m!=='wheel');$('manualMode').classList.toggle('hidden',m!=='manual');$('batchMode').classList.toggle('hidden',m!=='batch')}
+function buildWheels(){let ow=$('outerWheel'),iw=$('innerWheel');ow.innerHTML='';iw.innerHTML='<div class="center-dot">中</div>';ow.style.transition='none';ow.style.transform='rotate(0deg)';iw.style.transition='none';iw.style.transform='rotate(0deg)';let s=360/frontAll.length;frontAll.forEach((n,i)=>{let e=document.createElement('div');e.className='num';e.textContent=pad(n);let r=(i*s-90)*Math.PI/180;e.style.transform=`translate(${Math.cos(r)*125}px,${Math.sin(r)*125}px)`;ow.appendChild(e)});s=360/backAll.length;backAll.forEach((n,i)=>{let e=document.createElement('div');e.className='num';e.textContent=pad(n);let r=(i*s-90)*Math.PI/180;e.style.transform=`translate(${Math.cos(r)*58}px,${Math.sin(r)*58}px)`;iw.appendChild(e)})}
+function renderAll(){let fl=needFront-selectedFront.length,bl=needBack-selectedBack.length;$('infoText').textContent=`外圈前区还需 ${fl} 个 · 内圈后区还需 ${bl} 个`;$('frontBalls').innerHTML=selectedFront.map(n=>`<div class="ball red">${pad(n)}</div>`).join('');$('backBalls').innerHTML=selectedBack.map(n=>`<div class="ball blue">${pad(n)}</div>`).join('');renderHistory();renderFavorites();renderBatch()}
+function resetCurrent(){if(spinning)return;selectedFront=[];selectedBack=[];buildWheels();renderAll();$('statusText').textContent='已重置，可以重新转';$('spinBtn').textContent='开始转盘'}
+function doSpin(){if(spinning)return;let zone=selectedFront.length<needFront?'front':selectedBack.length<needBack?'back':null;if(!zone){saveCurrent();return}let all=zone==='front'?frontAll:backAll,selected=zone==='front'?selectedFront:selectedBack,remain=all.filter(n=>!selected.includes(n));if(!remain.length)return;let chosen=remain[Math.floor(Math.random()*remain.length)],idx=all.indexOf(chosen),step=360/all.length,wheel=$(zone==='front'?'outerWheel':'innerWheel');spinning=true;$('spinBtn').disabled=true;$('spinBtn').textContent='转动中...';$('statusText').textContent=zone==='front'?'外圈转动中...':'内圈转动中...';wheel.style.transition='none';wheel.style.transform='rotate(0deg)';void wheel.offsetWidth;let target=(6+Math.floor(Math.random()*3))*360+(360-idx*step);wheel.style.transition='transform 3.8s cubic-bezier(.15,.75,.08,1)';wheel.style.transform=`rotate(${target}deg)`;setTimeout(()=>{(zone==='front'?selectedFront:selectedBack).push(chosen);selectedFront.sort((a,b)=>a-b);selectedBack.sort((a,b)=>a-b);wheel.style.transition='none';wheel.style.transform='rotate(0deg)';spinning=false;$('spinBtn').disabled=false;renderAll();if(selectedFront.length===needFront&&selectedBack.length===needBack){$('spinBtn').textContent='完成本组并保存';$('statusText').textContent='全部选完！再次点击保存'}else{$('spinBtn').textContent='继续转盘';$('statusText').textContent=selectedFront.length<needFront?`前区 ${selectedFront.length}/${needFront}`:`后区 ${selectedBack.length}/${needBack}`}},3900)}
+function saveCurrent(){if(selectedFront.length!==needFront||selectedBack.length!==needBack)return;let item={id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:[...selectedFront],back:[...selectedBack],time:new Date().toISOString(),source:'wheel',spend:2,win:0,prize:''};history.unshift(item);history=history.slice(0,500);saveData();selectedFront=[];selectedBack=[];buildWheels();renderAll();$('statusText').textContent='已保存并自动开始新的一组';$('spinBtn').textContent='开始转盘'}
+function normalizeNumberInput(v){let raw=String(v||'').replace(/[，、,；;]+/g,' '),trail=/\s$/.test(raw);if(!/\s/.test(raw)){let d=raw.replace(/\D/g,'');let p=[];for(let i=0;i<d.length;i+=2)p.push(d.slice(i,i+2));return p.join(' ')}let ts=raw.trim().split(/\s+/).filter(Boolean),p=[];for(let t of ts){let d=t.replace(/\D/g,'');if(!d)continue;if(d.length<=2)p.push(d);else for(let i=0;i<d.length;i+=2)p.push(d.slice(i,i+2))}return p.join(' ')+(trail?' ':'')}
+function parseManual(v,expected,max){let n=normalizeNumberInput(v).trim().split(/\s+/).filter(Boolean).map(Number);if(n.length!==expected)return{ok:false,msg:`需要输入 ${expected} 个号码，现在是 ${n.length} 个`};if(n.some(x=>!Number.isInteger(x)||x<1||x>max))return{ok:false,msg:`号码必须在 01-${pad(max)} 范围内`};if(new Set(n).size!==n.length)return{ok:false,msg:'号码不能重复'};return{ok:true,nums:n.sort((a,b)=>a-b)}}
+function formatManual(i){i.value=normalizeNumberInput(i.value);$('manualResult').textContent=''}function formatOfficial(i){i.value=normalizeNumberInput(i.value)}
+function detectTicketGroups(text){
+  const digits=String(text||'').replace(/\D/g,'');
+  const size=(needFront+needBack)*2,groups=[];
+  if(!digits||digits.length<size)return groups;
+  for(let i=0;i+size<=digits.length;i+=size){
+    const nums=[];
+    for(let j=0;j<size;j+=2)nums.push(Number(digits.slice(i+j,i+j+2)));
+    const f=nums.slice(0,needFront),b=nums.slice(needFront);
+    if(f.every(n=>n>=1&&n<=frontAll.length)&&b.every(n=>n>=1&&n<=backAll.length)&&new Set(f).size===f.length&&new Set(b).size===b.length)
+      groups.push({front:f.sort((a,b)=>a-b),back:b.sort((a,b)=>a-b)});
+  }
+  return groups;
+}
+function saveManual(){
+  const fv=$('manualFront').value,bv=$('manualBack').value;
+  if(!bv.trim()){
+    const groups=detectTicketGroups(fv);
+    if(groups.length>1){
+      groups.forEach(x=>history.unshift({id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:x.front,back:x.back,time:new Date().toISOString(),source:'manual',spend:2,win:0,prize:''}));
+      history=history.slice(0,500);saveData();renderAll();
+      $('manualResult').innerHTML=`<span style="color:#7dff9b">✅ 已自动识别并保存 ${groups.length} 组号码</span>`;return;
+    }
+  }
+  const f=parseManual(fv,needFront,frontAll.length),b=parseManual(bv,needBack,backAll.length);
+  if(!f.ok)return $('manualResult').innerHTML=`<span style="color:#ff6b6b">前区：${f.msg}</span>`;
+  if(!b.ok)return $('manualResult').innerHTML=`<span style="color:#ff6b6b">后区：${b.msg}</span>`;
+  const x={id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:f.nums,back:b.nums,time:new Date().toISOString(),source:'manual',spend:2,win:0,prize:''};
+  history.unshift(x);history=history.slice(0,500);saveData();renderAll();
+  $('manualResult').innerHTML='<span style="color:#7dff9b">✅ 已保存：'+formatSet(x)+'</span>';
+}
+function clearManual(){$('manualFront').value='';$('manualBack').value='';$('manualResult').textContent='';$('manualFront').focus()}
+function randomPick(a,n){return[...a].sort(()=>Math.random()-.5).slice(0,n).sort((a,b)=>a-b)}function makeSet(){return{front:randomPick(frontAll,needFront),back:randomPick(backAll,needBack)}}function formatSet(x){return`${x.front.map(pad).join(' ')} + ${x.back.map(pad).join(' ')}`}
+function batch(c){batchResults=Array.from({length:c},makeSet);batchExpanded=false;batchResults.forEach(x=>history.unshift({id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:x.front,back:x.back,time:new Date().toISOString(),source:'batch',spend:2,win:0,prize:''}));history=history.slice(0,500);saveData();renderAll()}
+function renderBatch(){let arr=batchResults,show=batchExpanded?arr:arr.slice(0,5);$('batchList').innerHTML=arr.length?show.map((x,i)=>`<div class="history-item"><span class="history-text"><span class="history-main">${formatSet(x)}</span></span><button class="small-btn" onclick="favSet(${i})">⭐</button></div>`).join('')+((arr.length>5)?`<button class="collapse-btn" onclick="batchExpanded=!batchExpanded;renderBatch()">${batchExpanded?'收起 ▲':'展开全部 ▼（共 '+arr.length+' 组）'}</button>`:''):'<div class="empty">暂无结果</div>'}
+function copyText(t){if(navigator.clipboard)return navigator.clipboard.writeText(t);let ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();return Promise.resolve()}
+function copyCurrent(){if(!selectedFront.length)return alert('还没有号码');let t=(currentType==='ssq'?'双色球：':'大乐透：')+formatSet({front:selectedFront,back:selectedBack});copyText(t).then(()=>alert('已复制\n'+t))}function copyBatch(){if(!batchResults.length)return alert('还没有批量结果');copyText(batchResults.map(x=>formatSet(x)).join('\n')).then(()=>alert('已复制全部'))}
+function saveFavorite(f,b,n='未命名'){favorites.unshift({id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:[...f],back:[...b],note:n,time:new Date().toISOString()});favorites=favorites.slice(0,200);saveData();renderFavorites()}function favSet(i){let n=prompt('给这组号码写个备注（可留空）：','');if(n!==null)saveFavorite(batchResults[i].front,batchResults[i].back,n||'未命名')}function favHistory(i){let h=history[i],n=prompt('备注名称：','收藏号码');if(n!==null)saveFavorite(h.front,h.back,n||'收藏号码')}function delFav(id){favorites=favorites.filter(x=>x.id!==id);saveData();renderFavorites()}
+function getRangeStart(r){let n=new Date();n.setHours(0,0,0,0);if(r==='today')return n;if(r==='yesterday'){let d=new Date(n);d.setDate(d.getDate()-1);return d}if(r==='7d'){let d=new Date(n);d.setDate(d.getDate()-6);return d}if(r==='month')return new Date(n.getFullYear(),n.getMonth(),1);return null}function inRange(t){let r=$('historyRange').value,d=new Date(t),s=getRangeStart(r);if(r==='yesterday'){let e=new Date(s);e.setDate(e.getDate()+1);return d>=s&&d<e}return!s||d>=s}function historyMatches(h){if(h.type!==currentType||!inRange(h.time))return false;let q=($('historySearch').value||'').replace(/\D/g,'');if(!q)return true;return[...(h.front||[]),...(h.back||[])].map(pad).join('').includes(q)}
+function money(v){return'¥'+Number(v||0).toFixed(2).replace(/\.00$/,'')}
+function renderHistory(){let arr=history.filter(historyMatches);$('historyCount').textContent=arr.length+' 组';let show=historyExpanded?arr:arr.slice(0,5);$('historyList').className=arr.length>5&&!historyExpanded?'collapsed-list':'';$('historyList').innerHTML=arr.length?show.map(h=>{let i=history.indexOf(h),pr=h.prize?` · ${h.prize}`:'';return`<div class="history-item"><span class="history-text"><span class="history-main">${new Date(h.time).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}　${formatSet(h)}</span><span class="history-sub">花费 ${money(h.spend==null?2:h.spend)} · 中奖 ${money(h.win)}${pr}</span></span><button class="small-btn" onclick="copyHistory(${i})">📋</button><button class="small-btn" onclick="editHistory(${i})">✏️</button><button class="small-btn" onclick="favHistory(${i})">⭐</button><button class="small-btn" onclick="delHistory(${i})">删</button></div>`}).join('')+(arr.length>5?`<button class="collapse-btn" onclick="historyExpanded=!historyExpanded;renderHistory()">${historyExpanded?'收起 ▲':'展开全部 ▼（共 '+arr.length+' 组）'}</button>`:''):'<div class="empty">暂无符合条件的记录</div>';updateTodayMoney();updateStats();updateNumberSearch()}
+function copyHistory(i){let h=history[i];if(h)copyText(formatSet(h)).then(()=>alert('已复制\n'+formatSet(h)))}function delHistory(i){if(!confirm('删除这条记录？'))return;history.splice(i,1);saveData();renderAll()}function editHistory(i){let h=history[i];if(!h)return;let s=prompt('修改花费金额：',String(h.spend==null?2:h.spend));if(s===null)return;let w=prompt('修改中奖金额：',String(h.win||0));if(w===null)return;h.spend=Math.max(0,Number(s)||0);h.win=Math.max(0,Number(w)||0);saveData();renderAll()}
+function updateTodayMoney(){let k=new Date().toDateString(),a=history.filter(h=>h.type===currentType&&new Date(h.time).toDateString()===k),sp=a.reduce((s,h)=>s+Number(h.spend==null?2:h.spend),0),w=a.reduce((s,h)=>s+Number(h.win||0),0),p=w-sp;$('todayDate').textContent=new Date().toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'});$('todaySpend').textContent=money(sp);$('todayWin').textContent=money(w);$('todayProfit').textContent=(p>=0?'+':'-')+money(Math.abs(p));$('todayProfit').style.color=p>=0?'#ffd700':'#ff8fa3'}
+function periodStats(start){let a=history.filter(h=>h.type===currentType&&new Date(h.time)>=start),sp=a.reduce((s,h)=>s+Number(h.spend==null?2:h.spend),0),w=a.reduce((s,h)=>s+Number(h.win||0),0);return{sp,w,p:w-sp}}function updateStats(){let n=new Date(),d=new Date(n);d.setHours(0,0,0,0);let wk=new Date(d);wk.setDate(wk.getDate()-((wk.getDay()+6)%7));let mo=new Date(n.getFullYear(),n.getMonth(),1),t=periodStats(d),w=periodStats(wk),m=periodStats(mo);$('statTodaySpend').textContent=money(t.sp);$('statTodayWin').textContent=money(t.w);$('statWeekProfit').textContent=(w.p>=0?'+':'-')+money(Math.abs(w.p));$('statMonthProfit').textContent=(m.p>=0?'+':'-')+money(Math.abs(m.p))}
+function updateNumberSearch(){let q=($('numberSearch').value||'').replace(/\D/g,'');if(!q)return $('numberSearchResult').textContent='输入号码即可查询出现次数';let hits=history.filter(h=>h.type===currentType&&[...(h.front||[]),...(h.back||[])].some(n=>pad(n)===q.padStart(2,'0'))),sets=history.filter(h=>h.type===currentType&&[...(h.front||[]),...(h.back||[])].map(pad).join('').includes(q));$('numberSearchResult').innerHTML=`号码 <b>${q.padStart(2,'0')}</b>：单号出现 ${hits.length} 次；包含该数字组合的记录 ${sets.length} 组`}
+function renderFavorites(){let a=favorites.filter(x=>x.type===currentType),show=a.slice(0,5);$('favList').innerHTML=a.length?show.map(x=>`<div class="fav-item"><span class="history-text"><span class="history-main"><span class="fav">⭐ ${x.note}</span></span><span class="history-sub">${formatSet(x)}</span></span><button class="small-btn" onclick="copyText('${currentType==='ssq'?'双色球：':'大乐透：'}${formatSet(x)}')">复制</button><button class="small-btn" onclick="delFav('${x.id}')">删除</button></div>`).join(''):'<div class="empty">暂无收藏</div>'}
+
+// 固定奖级金额。一等奖、二等奖金额浮动，永不自动填入。
+function prizeInfo(type,f,b){if(type==='ssq'){if(f===6&&b===1)return['一等奖',null];if(f===6&&b===0)return['二等奖',null];if(f===5&&b===1)return['三等奖',3000];if(f===5&&b===0)return['四等奖',200];if(f===4&&b===1)return['四等奖',200];if(f===4&&b===0)return['五等奖',10];if(f===3&&b===1)return['五等奖',10];if(f===2&&b===1)return['六等奖',5];if(f===1&&b===1)return['六等奖',5];if(f===0&&b===1)return['六等奖',5];return['未中奖',0]}else{if(f===5&&b===2)return['一等奖',null];if(f===5&&b===1)return['二等奖',null];if(f===5&&b===0)return['三等奖',10000];if(f===4&&b===2)return['四等奖',3000];if(f===4&&b===1)return['五等奖',300];if(f===3&&b===2)return['六等奖',200];if(f===4&&b===0)return['七等奖',100];if(f===3&&b===1)return['八等奖',15];if(f===2&&b===2)return['八等奖',15];if(f===3&&b===0)return['九等奖',5];if(f===2&&b===1)return['九等奖',5];if(f===1&&b===2)return['九等奖',5];return['未中奖',0]}}
+function formatOfficialSingle(i){
+  i.value=String(i.value||'').replace(/[，、,；;|]+/g,' ').replace(/[^\d\s+\-]/g,' ');
+}
+
+document.addEventListener('paste',function(e){const el=e.target;if(el&&el.id==='officialNumbers')setTimeout(()=>formatOfficialSingle(el),0)});
+function parseOfficialNumbers(text){
+  const expected=needFront+needBack;
+  const raw=String(text||'').replace(/双色球|大乐透|开奖号码|前区|后区|红球|蓝球|红|蓝/gi,' ').replace(/[，、,；;|+]/g,' ');
+  const tokens=raw.trim().split(/\s+/).filter(Boolean);
+  let nums=[];
+  const longDigits=[];
+  for(const t of tokens){
+    const d=t.replace(/\D/g,'');
+    if(!d)continue;
+    if(d.length<=2) nums.push(Number(d));
+    else longDigits.push(d);
+  }
+  // 纯连续号码，例如 04092134350712。
+  const allLong=longDigits.join('');
+  if(nums.length!==expected && allLong.length===expected*2){
+    nums=[];
+    for(let i=0;i<allLong.length;i+=2)nums.push(Number(allLong.slice(i,i+2)));
+  }
+  // 如果粘贴内容带有期号/日期等额外数字，优先取最后 expected 个两位号码。
+  if(nums.length>expected)nums=nums.slice(-expected);
+  if(nums.length!==expected){
+    const digits=String(text||'').replace(/\D/g,'');
+    if(digits.length===expected*2){
+      nums=[];
+      for(let i=0;i<digits.length;i+=2)nums.push(Number(digits.slice(i,i+2)));
+    }
+  }
+  if(nums.length!==expected)return {ok:false,msg:`当前${currentType==='ssq'?'双色球需要 7 个号码（6+1）':'大乐透需要 7 个号码（5+2）'}，现在识别到 ${nums.length} 个号码`};
+  const f=nums.slice(0,needFront),b=nums.slice(needFront);
+  if(f.some(n=>n<1||n>frontAll.length))return {ok:false,msg:`前区号码必须在 01-${pad(frontAll.length)} 范围内`};
+  if(b.some(n=>n<1||n>backAll.length))return {ok:false,msg:`后区号码必须在 01-${pad(backAll.length)} 范围内`};
+  if(new Set(f).size!==f.length||new Set(b).size!==b.length)return {ok:false,msg:'同一区域号码不能重复'};
+  return {ok:true,front:f.sort((a,b)=>a-b),back:b.sort((a,b)=>a-b)};
+}
+function buildPrizeCountCards(arr){
+  const levels=currentType==='ssq'
+    ? ['一等奖','二等奖','三等奖','四等奖','五等奖','六等奖']
+    : ['一等奖','二等奖','三等奖','四等奖','五等奖','六等奖','七等奖','八等奖','九等奖'];
+  const cls=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth'];
+  return `<div class="prize-count-grid">${levels.map((name,i)=>{
+    const count=arr.filter(h=>h.prize===name).length;
+    return `<div class="prize-count-card ${cls[i]}"><b>${name}</b><strong>${count}</strong><span>注</span></div>`;
+  }).join('')}</div>`;
+}
+
+function verifyWin(){
+  const input=$('officialNumbers'),text=String(input.value||'').trim();
+  if(!text)return $('verifyResult').innerHTML='<span style="color:#ff6b6b">请粘贴完整开奖号码</span>';
+  const parsed=parseOfficialNumbers(text);
+  if(!parsed.ok)return $('verifyResult').innerHTML=`<span style="color:#ff6b6b">${parsed.msg}</span>`;
+
+  input.value=`${parsed.front.map(pad).join(' ')} + ${parsed.back.map(pad).join(' ')}`;
+  const of=parsed.front,ob=parsed.back,arr=history.filter(h=>h.type===currentType);
+  let fixedWin=0,variable=[];
+  const lines=arr.map(h=>{
+    const f=h.front.filter(n=>of.includes(n)).length,b=h.back.filter(n=>ob.includes(n)).length;
+    const [p,amt]=prizeInfo(currentType,f,b);h.prize=p;
+    if(h.spend==null)h.spend=Number($('recordSpend').value||2)||2;
+    if(p==='一等奖'||p==='二等奖'){h.win=0;variable.push({h,p})}
+    else{h.win=amt||0;fixedWin+=amt||0}
+    const hs=a=>a.map(n=>of.includes(n)?`<span class="hit">${pad(n)}</span>`:pad(n)).join(' ');
+    const hb=a=>a.map(n=>ob.includes(n)?`<span class="hit">${pad(n)}</span>`:pad(n)).join(' ');
+    return `${hs(h.front)} + ${hb(h.back)} → <b style="color:${p==='未中奖'?'#999':'#ffd700'}">${p}</b>${amt?` · ${money(amt)}`:''}`;
+  });
+
+  saveData();renderAll();
+  $('verifyResult').innerHTML=`${buildPrizeCountCards(arr)}
+    <div style="margin-top:9px">已验证 ${arr.length} 组，共命中 ${arr.filter(h=>h.prize&&h.prize!=='未中奖').length} 注。固定奖级已自动计入中奖金额：${money(fixedWin)}
+    ${variable.length?`<br><span style="color:#ff6b6b">⚠️ 另有 ${variable.length} 注一等奖/二等奖，金额浮动，未自动估算。</span>`:''}</div>
+    <br>${lines.join('<br>')||'暂无该玩法记录'}`;
+
+  if(variable.length)setTimeout(()=>showCelebration(variable),120);
+}
+
+function showCelebration(variable){
+  const first=variable.filter(x=>x.p==='一等奖').length;
+  const second=variable.filter(x=>x.p==='二等奖').length;
+  $('celebrateOverlay').dataset.prize=first?'first':'second';
+  $('celebrateOverlay').classList.add('show');
+  launchFireworks(first,second);
+}
+
+function makeFirework(box,type){
+  const f=document.createElement('div');f.className=`firework ${type}`;
+  const firstColors=['#ffd700','#fff7b0','#ffffff','#ffb300','#ffe45c'];
+  const secondColors=['#55eaff','#7c5cff','#b66cff','#ffffff','#36d9ff'];
+  const colors=type==='first'?firstColors:secondColors;
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  f.style.color=color;
+  f.style.left=(4+Math.random()*92)+'%';
+  f.style.top=(7+Math.random()*68)+'%';
+  const count=type==='first'?72:52;
+  const radius=type==='first'?Math.round(105+Math.random()*135):Math.round(80+Math.random()*110);
+  for(let i=0;i<count;i++){
+    const s=document.createElement('i');s.className='spark';
+    s.style.setProperty('--angle',`${(360/count)*i+Math.random()*2.5}deg`);
+    s.style.setProperty('--dist',`${radius*(.78+Math.random()*.28)}px`);
+    s.style.animationDelay=`${Math.random()*.12}s`;
+    s.style.background=color;
+    f.appendChild(s);
+  }
+  const ring=document.createElement('i');ring.className='ring';ring.style.color=color;f.appendChild(ring);
+  if(type==='first'){
+    for(let i=0;i<16;i++){
+      const t=document.createElement('i');t.className='trail';
+      t.style.setProperty('--angle',`${i*22.5+Math.random()*4}deg`);
+      t.style.setProperty('--len',`${125+Math.random()*125}px`);
+      t.style.background=`linear-gradient(to bottom,${color},transparent)`;
+      f.appendChild(t);
+    }
+  }
+  box.appendChild(f);setTimeout(()=>f.remove(),3100);
+}
+
+function launchFireworks(firstCount,secondCount){
+  const box=$('fireworks');if(!box)return;box.innerHTML='';
+  let stopped=false;
+  const burst=()=>{
+    if(stopped)return;
+    if(firstCount)makeFirework(box,'first');
+    if(secondCount)makeFirework(box,'second');
+    if(firstCount&&secondCount&&Math.random()>.35)makeFirework(box,Math.random()>.5?'first':'second');
+  };
+  burst();
+  const timer=setInterval(burst,firstCount?150:125);
+  setTimeout(()=>{stopped=true;clearInterval(timer)},8500);
+}
+
+function closeCelebration(){
+  const o=$('celebrateOverlay');if(o)o.classList.remove('show');
+  const f=$('fireworks');if(f)f.innerHTML='';
+  variablePending=[];
+}
+
+
+function clearOfficial(){if($('officialNumbers'))$('officialNumbers').value='';$('verifyResult').textContent=''}
+function copyFilteredHistory(){let a=history.filter(historyMatches);if(!a.length)return alert('当前没有可复制的记录');copyText(a.map(h=>formatSet(h)).join('\n')).then(()=>alert('已复制'))}
+function showStats(){let modal=$('statsModal'),chart=$('statsChart'),r=$('statsRange').value,n=new Date();n.setHours(0,0,0,0);let s=null;if(r==='today')s=new Date(n);else if(r==='7d'){s=new Date(n);s.setDate(s.getDate()-6)}else if(r==='month')s=new Date(n.getFullYear(),n.getMonth(),1);let source=history.filter(h=>!s||new Date(h.time)>=s);function gs(t){let a=source.filter(h=>h.type===t),sp=a.reduce((x,h)=>x+Number(h.spend==null?2:h.spend),0),w=a.reduce((x,h)=>x+Number(h.win||0),0);return{count:a.length,sp,w,p:w-sp,winCount:a.filter(h=>Number(h.win||0)>0).length}}let a=gs('ssq'),b=gs('dlt'),tot={count:a.count+b.count,sp:a.sp+b.sp,w:a.w+b.w,p:a.p+b.p,winCount:a.winCount+b.winCount},rows=[{name:'🔵 大乐透',...b},{name:'🔴 双色球',...a},{name:'📊 合计',...tot}],max=Math.max(1,...rows.map(x=>Math.max(x.sp,x.w)));chart.innerHTML=`<table style="width:100%;border-collapse:separate;border-spacing:0 7px;font-size:12px"><thead><tr style="color:#aaa"><th style="text-align:left">玩法</th><th>购买</th><th>中奖</th><th>投入</th><th>中奖金额</th><th>盈亏</th></tr></thead><tbody>${rows.map(x=>`<tr><td><b>${x.name}</b></td><td style="text-align:center">${x.count}注</td><td style="text-align:center">${x.winCount}注</td><td style="text-align:center;color:#ff8fa3">${money(x.sp)}</td><td style="text-align:center;color:#ffd700">${money(x.w)}</td><td style="text-align:center;color:${x.p>=0?'#7dff9b':'#ff8fa3'}">${x.p>=0?'+':''}${money(x.p)}</td></tr>`).join('')}</tbody></table>${rows.map(x=>`<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;font-size:11px"><b>${x.name}</b><span>买 ${x.count} 注 · 中 ${x.winCount} 注</span></div><div class="chart-track" style="margin-top:4px"><div class="chart-bar" style="width:${x.sp/max*100}%"></div></div><div class="chart-track" style="margin-top:4px"><div class="chart-bar" style="width:${x.w/max*100}%;background:linear-gradient(90deg,#4cc9f0,#7dff9b)"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa"><span>投入 ${money(x.sp)}</span><span>中奖 ${money(x.w)}</span></div></div>`).join('')}`;modal.classList.add('show')}
+function closeStats(){$('statsModal').classList.remove('show')}
+function exportData(){let data={app:'彩票转盘',version:APP_VERSION,exportedAt:new Date().toISOString(),history,favorites},blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`彩票转盘备份_${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href)}
+function importData(){let i=document.createElement('input');i.type='file';i.accept='.json,application/json';i.onchange=()=>{let f=i.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.history)||!Array.isArray(d.favorites))throw Error();history=d.history;favorites=d.favorites;saveData();renderAll();alert('恢复成功')}catch(e){alert('备份文件格式不正确')}};r.readAsText(f)};i.click()}
+function clearAllData(){if(!confirm('确定删除本机全部历史、收藏和批量记录吗？'))return;localStorage.removeItem(allKey('history'));localStorage.removeItem(allKey('favorites'));history=[];favorites=[];batchResults=[];renderAll();alert('已清空本机数据')}
+function init(){arrays();loadData();buildWheels();renderAll();$('statusText').textContent='点击「开始转盘」开始选号'}
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));init();
+</script>
+<div class="celebrate-overlay" id="celebrateOverlay" onclick="closeCelebration()">
+  <div class="fireworks" id="fireworks"></div>
+</div>
+
+<style>
+/* ===== 新增：复式功能，独立追加，不改动原功能 ===== */
+#mode-multiple{flex:1}
+.multiple-card{background:#0004;border-radius:12px;padding:10px;margin:10px 0}
+.multiple-title{font-size:13px;font-weight:700;color:#ffd700;margin-bottom:8px}
+.multiple-help{font-size:10px;color:#888;line-height:1.55;margin:4px 0 8px}
+.multiple-stat{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.multiple-stat>div{background:#0005;border-radius:9px;padding:7px 3px;text-align:center}
+.multiple-stat b{display:block;font-size:10px;color:#999}.multiple-stat strong{display:block;font-size:15px;margin-top:2px}
+.multiple-record{font-size:11px;padding:8px 2px;border-bottom:1px solid #ffffff0d;line-height:1.6}
+.multiple-record .main{color:#fff}.multiple-record .sub{color:#888;margin-top:2px}
+.multiple-prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.multiple-prize{background:#0005;border-radius:8px;padding:6px 2px;text-align:center}
+.multiple-prize b{display:block;font-size:9px;color:#aaa}.multiple-prize strong{font-size:16px;color:#ffd700}.multiple-prize span{display:block;font-size:9px;color:#888}
+.multiple-batch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.multiple-batch-grid button{width:100%}
+.multiple-batch-item{font-size:11px;padding:6px 2px;border-bottom:1px solid #ffffff0d;display:flex;align-items:center;gap:5px}
+.multiple-batch-item .main{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+<script>
+/* ===== 复式功能：全部为追加代码 =====
+   原有双色球/大乐透、转盘、手动、批量、验证、历史、统计、备份等代码均不修改。
+*/
+(function(){
+  const MULTI_KEY='lottery_wheel_v2_multiple';
+  let multiHistory=[];
+  let multiBatchResults=[];
+  const M=id=>document.getElementById(id);
+  const mpad=n=>String(n).padStart(2,'0');
+  function mRules(){return currentType==='ssq'?{frontMax:33,backMax:16,minFront:6,minBack:1,maxFront:20,maxBack:16,baseFront:6,baseBack:1}:{frontMax:35,backMax:12,minFront:5,minBack:2,maxFront:18,maxBack:12,baseFront:5,baseBack:2};}
+  function mLoad(){try{multiHistory=JSON.parse(localStorage.getItem(MULTI_KEY+'_'+currentType)||'[]');if(!Array.isArray(multiHistory))multiHistory=[]}catch(e){multiHistory=[]}}
+  function mSave(){localStorage.setItem(MULTI_KEY+'_'+currentType,JSON.stringify(multiHistory));}
+  function mNorm(v){let raw=String(v||'').replace(/[，、,；;|+]+/g,' ');if(!/\s/.test(raw)){let d=raw.replace(/\D/g,'');let p=[];for(let i=0;i<d.length;i+=2)p.push(d.slice(i,i+2));return p.join(' ')}return raw.trim().split(/\s+/).filter(Boolean).map(x=>x.replace(/\D/g,'')).filter(Boolean).join(' ')}
+  function mParse(v,min,max,label,limit){let a=mNorm(v).split(/\s+/).filter(Boolean).map(Number);if(a.length<min)return{ok:false,msg:`${label}至少选择 ${min} 个号码，现在是 ${a.length} 个`};if(a.length>limit)return{ok:false,msg:`${label}最多选择 ${limit} 个号码，现在是 ${a.length} 个`};if(a.some(n=>!Number.isInteger(n)||n<1||n>max))return{ok:false,msg:`${label}号码必须在 01-${mpad(max)} 范围内`};if(new Set(a).size!==a.length)return{ok:false,msg:`${label}号码不能重复`};return{ok:true,nums:a.sort((x,y)=>x-y)}}
+  function comb(n,k){if(k<0||k>n)return 0;if(k===0||k===n)return 1;k=Math.min(k,n-k);let r=1;for(let i=1;i<=k;i++)r=r*(n-k+i)/i;return Math.round(r)}
+  function money2(v){return '¥'+Number(v||0).toFixed(2).replace(/\.00$/,'')}
+  function mPrize(type,f,b){if(type==='ssq'){if(f===6&&b===1)return['一等奖',null];if(f===6&&b===0)return['二等奖',null];if(f===5&&b===1)return['三等奖',3000];if(f===5&&b===0)return['四等奖',200];if(f===4&&b===1)return['四等奖',200];if(f===4&&b===0)return['五等奖',10];if(f===3&&b===1)return['五等奖',10];if(f===2&&b===1)return['六等奖',5];if(f===1&&b===1)return['六等奖',5];if(f===0&&b===1)return['六等奖',5];return['未中奖',0]}else{if(f===5&&b===2)return['一等奖',null];if(f===5&&b===1)return['二等奖',null];if(f===5&&b===0)return['三等奖',10000];if(f===4&&b===2)return['四等奖',3000];if(f===4&&b===1)return['五等奖',300];if(f===3&&b===2)return['六等奖',200];if(f===4&&b===0)return['七等奖',100];if(f===3&&b===1)return['八等奖',15];if(f===2&&b===2)return['八等奖',15];if(f===3&&b===0)return['九等奖',5];if(f===2&&b===1)return['九等奖',5];if(f===1&&b===2)return['九等奖',5];return['未中奖',0]}}
+  function multiCounts(frontPool,backPool,of,ob){
+    const r=mRules(),fh=frontPool.filter(n=>of.includes(n)).length,bh=backPool.filter(n=>ob.includes(n)).length,out={};let fixed=0,total=0;
+    for(let f=0;f<=r.baseFront;f++)for(let b=0;b<=r.baseBack;b++){
+      const waysF=comb(fh,f)*comb(frontPool.length-fh,r.baseFront-f),waysB=comb(bh,b)*comb(backPool.length-bh,r.baseBack-b),count=waysF*waysB;
+      if(!count)continue;const [p,amt]=mPrize(currentType,f,b);if(p==='未中奖')continue;out[p]=(out[p]||0)+count;total+=count;if(amt)fixed+=count*amt;
+    }
+    return{counts:out,fixed,total,fh,bh};
+  }
+  function multiComboCount(f,b){const r=mRules();return comb(f,r.baseFront)*comb(b,r.baseBack)}
+  function mFormat(f,b){return f.map(mpad).join(' ')+' + '+b.map(mpad).join(' ')}
+  function mInputs(){return M('multipleFront')&&M('multipleBack')}
+  function mRender(){
+    if(!M('multipleHistoryList'))return;mLoad();const arr=multiHistory.slice(0,30);
+    M('multipleHistoryCount').textContent=multiHistory.length+' 组';
+    M('multipleHistoryList').innerHTML=arr.length?arr.map((x,i)=>`<div class="multiple-record"><div class="main">${new Date(x.time).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}　${mFormat(x.front,x.back)}</div><div class="sub">${Number(x.combos||0).toLocaleString()} 注 · 花费 ${money2(x.spend)} · 中奖 ${money2(x.win)}${x.verified?' · 已验证':''}</div><div style="margin-top:3px"><button class="small-btn" onclick="window.multiCopy(${i})">📋复制</button> <button class="small-btn" onclick="window.multiDel(${i})">删除</button></div></div>`).join(''):'<div class="empty">暂无复式记录</div>';
+    const all=multiHistory,sp=all.reduce((s,x)=>s+Number(x.spend||0),0),win=all.reduce((s,x)=>s+Number(x.win||0),0),profit=win-sp;
+    M('multipleStats').innerHTML=all.length?`<div class="multiple-stat"><div><b>复式组数</b><strong>${all.length}</strong></div><div><b>总投入</b><strong>${money2(sp)}</strong></div><div><b>总中奖</b><strong>${money2(win)}</strong></div></div><div class="tip" style="margin-top:2px">复式盈亏：<b style="color:${profit>=0?'#7dff9b':'#ff8fa3'}">${profit>=0?'+':''}${money2(profit)}</b></div>`:'<div class="empty">暂无复式记录</div>';
+  }
+  function multiInit(){
+    const modeRow=M('mode-wheel');if(!modeRow)return;
+    if(!M('mode-multiple')){const btn=document.createElement('button');btn.className='mode';btn.id='mode-multiple';btn.textContent='➕ 复式';btn.onclick=()=>window.setMultipleMode();modeRow.appendChild(btn)}
+    if(!M('multipleMode')){
+      const sec=document.createElement('section');sec.id='multipleMode';sec.className='hidden';sec.innerHTML=`
+      <div class="multiple-card"><div class="multiple-title">➕ ${currentType==='ssq'?'双色球':'大乐透'} 复式选号</div>
+      <div class="multiple-help">复式会从你选择的号码中自动拆成多注单式组合。每注 ¥2。选择号码越多，组合数越多，请确认投入金额后再保存。</div>
+      <label style="display:block;font-size:12px;color:#aaa">前区号码</label><input id="multipleFront" type="text" inputmode="text" autocomplete="off" placeholder="">
+      <label style="display:block;font-size:12px;color:#aaa">后区号码</label><input id="multipleBack" type="text" inputmode="text" autocomplete="off" placeholder="">
+      <div class="multiple-stat"><div><b>组合注数</b><strong id="multipleCombos">0</strong></div><div><b>预计投入</b><strong id="multipleSpend">¥0</strong></div><div><b>选择号码</b><strong id="multiplePicked">0+0</strong></div></div>
+      <button class="action" onclick="window.multiPreview()">🔢 计算复式注数</button><button class="ghost section-btn" onclick="window.multiSave()">💾 保存这组复式</button><button class="ghost section-btn" onclick="window.multiClear()">清空重新输入</button></div>
+      <div class="multiple-card"><div class="box-title"><span>🏆 复式开奖验证</span><span>固定奖级自动计算</span></div>
+      <input id="multipleOfficial" type="text" inputmode="text" autocomplete="off" placeholder="">
+      <div class="grid2"><input id="multipleFirstAmt" type="number" inputmode="decimal" min="0" step="1" placeholder="一等奖/注（可选）"><input id="multipleSecondAmt" type="number" inputmode="decimal" min="0" step="1" placeholder="二等奖/注（可选）"></div>
+      <button class="action" onclick="window.multiVerify()">🏆 验证全部复式记录</button><div id="multipleVerifyResult" class="result"></div></div>
+      <div class="multiple-card"><div class="box-title"><span>📊 复式记录统计</span><span id="multipleHistoryCount">0 组</span></div><div id="multipleStats"></div><div id="multipleHistoryList"></div></div>`;
+      M('batchMode').after(sec);
+      ['multipleFront','multipleBack'].forEach(id=>M(id).addEventListener('input',e=>{e.target.value=mNorm(e.target.value);window.multiPreview()}));
+    }
+    mRefreshUI();mRender();
+  }
+  function updateVisibility(){
+    if(!M('multipleMode'))return;
+    const isMulti=mode==='multiple';
+    M('multipleMode').classList.toggle('hidden',!isMulti);
+    if(isMulti){M('wheelMode').classList.add('hidden');M('manualMode').classList.add('hidden');M('batchMode').classList.add('hidden')}
+  }
+  function setModeMultiple(){
+    multiInit();mode='multiple';['wheel','manual','batch'].forEach(x=>{const e=M('mode-'+x);if(e)e.classList.remove('active')});M('mode-multiple').classList.add('active');M('wheelMode').classList.add('hidden');M('manualMode').classList.add('hidden');M('batchMode').classList.add('hidden');M('multipleMode').classList.remove('hidden');mRefreshUI();mRender();
+  }
+  window.setMultipleMode=setModeMultiple;
+  window.multiPreview=function(){
+    const r=mRules(),f=mParse(M('multipleFront').value,r.minFront,r.frontMax,'前区',r.maxFront),b=mParse(M('multipleBack').value,r.minBack,r.backMax,'后区',r.maxBack);
+    M('multiplePicked').textContent=(f.ok?f.nums.length:0)+'+'+(b.ok?b.nums.length:0);
+    if(!f.ok||!b.ok){M('multipleCombos').textContent='0';M('multipleSpend').textContent='¥0';return{ok:false,f,b}}
+    const c=multiComboCount(f.nums.length,b.nums.length);M('multipleCombos').textContent=c.toLocaleString();M('multipleSpend').textContent=money2(c*2);return{ok:true,f,b,c}
+  };
+  window.multiSave=function(){const z=window.multiPreview();if(!z.ok)return M('multipleVerifyResult').innerHTML='<span style="color:#ff6b6b">请先正确填写复式号码</span>';const x={id:crypto.randomUUID?crypto.randomUUID():Date.now()+Math.random(),type:currentType,front:z.f.nums,back:z.b.nums,time:new Date().toISOString(),combos:z.c,spend:z.c*2,win:0,verified:false,prizes:{}};mLoad();multiHistory.unshift(x);multiHistory=multiHistory.slice(0,200);mSave();mRender();M('multipleVerifyResult').innerHTML='<span style="color:#7dff9b">✅ 已保存复式：'+mFormat(x.front,x.back)+'，共 '+x.combos.toLocaleString()+' 注</span>'};
+  window.multiClear=function(){M('multipleFront').value='';M('multipleBack').value='';M('multipleCombos').textContent='0';M('multipleSpend').textContent='¥0';M('multiplePicked').textContent='0+0';M('multipleVerifyResult').textContent=''};
+  window.multiCopy=function(i){mLoad();const x=multiHistory[i];if(x)copyText((currentType==='ssq'?'双色球复式：':'大乐透复式：')+mFormat(x.front,x.back)).then(()=>alert('已复制'))};
+  window.multiDel=function(i){mLoad();if(!confirm('删除这条复式记录？'))return;multiHistory.splice(i,1);mSave();mRender()};
+  window.multiVerify=function(){
+    mLoad();const text=String(M('multipleOfficial').value||'').trim();if(!text)return M('multipleVerifyResult').innerHTML='<span style="color:#ff6b6b">请粘贴完整开奖号码</span>';
+    const parsed=parseOfficialNumbers(text);if(!parsed.ok)return M('multipleVerifyResult').innerHTML='<span style="color:#ff6b6b">'+parsed.msg+'</span>';
+    M('multipleOfficial').value=mFormat(parsed.front,parsed.back);const first=Number(M('multipleFirstAmt').value||0),second=Number(M('multipleSecondAmt').value||0);let totalWin=0,totalCombos=0,verified=0,allPrizes={};
+    const rows=multiHistory.map(x=>{const q=multiCounts(x.front,x.back,parsed.front,parsed.back);let win=q.fixed;if(q.counts['一等奖'])win+=q.counts['一等奖']*first;if(q.counts['二等奖'])win+=q.counts['二等奖']*second;x.win=win;x.verified=true;x.prizes=q.counts;x.fixedWin=q.fixed;totalWin+=win;totalCombos+=x.combos;verified++;Object.entries(q.counts).forEach(([k,v])=>allPrizes[k]=(allPrizes[k]||0)+v);return{x,q}});mSave();
+    const cards=Object.keys(allPrizes).filter(k=>k!=='未中奖').map(k=>`<div class="multiple-prize"><b>${k}</b><strong>${allPrizes[k].toLocaleString()}</strong><span>注</span></div>`).join('');const floating=(allPrizes['一等奖']||0)+(allPrizes['二等奖']||0);
+    M('multipleVerifyResult').innerHTML=`<div class="multiple-prize-grid">${cards||'<div class="multiple-prize"><b>中奖</b><strong>0</strong><span>注</span></div>'}</div><div>已验证 ${verified} 组复式，共 ${Number(totalCombos).toLocaleString()} 注。固定奖级中奖金额：${money2(rows.reduce((s,v)=>s+v.q.fixed,0))}<br>本次计入中奖金额：<b style="color:#ffd700">${money2(totalWin)}</b>${floating?`<br>${first||second?'一等奖/二等奖已按你填写的金额计算。':'⚠️ 一等奖/二等奖金额浮动，当前未计入中奖金额。'}`:''}</div>${rows.slice(0,30).map(v=>`<div style="margin-top:6px">${mFormat(v.x.front,v.x.back)} → ${Object.entries(v.q.counts).filter(([k])=>k!=='未中奖').map(([k,n])=>k+' × '+n.toLocaleString()).join('，')||'未中奖'} · ${money2(v.x.win)}</div>`).join('')}`;mRender();
+  };
+  function mRefreshUI(){
+    if(!M('multipleMode'))return;const r=mRules(),isS=currentType==='ssq';
+    const title=M('multipleMode').querySelector('.multiple-title');if(title)title.textContent='➕ '+(isS?'双色球':'大乐透')+' 复式选号';
+    M('multipleFront').placeholder=isS?'至少6个，最多20个，例如：01 03 08 12 18 22 31':'至少5个，最多18个，例如：01 08 12 18 22 27';
+    M('multipleBack').placeholder=isS?'至少1个，最多16个，例如：03 07':'至少2个，最多12个，例如：03 07 09';
+    M('multipleOfficial').placeholder=isS?'粘贴双色球开奖号码，例如 01 08 12 18 22 27 + 03':'粘贴大乐透开奖号码，例如 01 08 12 18 22 + 03 07';
+    M('multipleFront').value='';M('multipleBack').value='';M('multipleCombos').textContent='0';M('multipleSpend').textContent='¥0';M('multiplePicked').textContent='0+0';M('multipleVerifyResult').textContent='';M('multipleOfficial').value='';M('multipleFirstAmt').value='';M('multipleSecondAmt').value='';mLoad();mRender();
+    updateVisibility();
+  }
+  function makeMultiSet(){const r=mRules(),front=randomPick(frontAll,r.baseFront),back=randomPick(backAll,r.baseBack);return{front,back}}
+  function makeMultiPool(){const r=mRules();const fc=r.minFront+Math.floor(Math.random()*(r.maxFront-r.minFront+1)),bc=r.minBack+Math.floor(Math.random()*(r.maxBack-r.minBack+1));return{front:randomPick(frontAll,fc),back:randomPick(backAll,bc)}}
+  function renderMultiBatch(){
+    if(!M('multipleBatchList'))return;const arr=multiBatchResults;M('multipleBatchCount').textContent=arr.length+' 组';
+    M('multipleBatchList').innerHTML=arr.length?arr.map((x,i)=>`<div class="multiple-batch-item"><span class="main">${mFormat(x.front,x.back)} · ${Number(x.combos).toLocaleString()}注</span><button class="small-btn" onclick="window.multiBatchFav(${i})">⭐</button></div>`).join(''):'<div class="empty">暂无复式批量结果</div>';
+  }
+  window.multiBatch=function(c){multiBatchResults=Array.from({length:c},makeMultiPool).map(x=>({...x,combos:multiComboCount(x.front.length,x.back.length)}));renderMultiBatch()};
+  window.multiBatchCopy=function(){if(!multiBatchResults.length)return alert('还没有复式批量结果');copyText(multiBatchResults.map(x=>mFormat(x.front,x.back)+' · '+x.combos+'注').join('\n')).then(()=>alert('已复制全部'))};
+  window.multiBatchFav=function(i){const x=multiBatchResults[i];if(!x)return;let n=prompt('给这组复式写个备注（可留空）：','');if(n!==null)saveFavorite(x.front,x.back,n||'复式批量')};
+  function initMultiBatch(){
+    const bm=M('multipleMode');if(!bm||M('multipleBatchBox'))return;
+    const box=document.createElement('div');box.id='multipleBatchBox';box.className='box';box.innerHTML=`<div class="box-title"><span>➕ ${currentType==='ssq'?'双色球':'大乐透'} 批量复式</span><span>自动生成复式组合</span></div><div class="multiple-help">每组随机选择一批号码，自动计算复式组合注数。与上面的普通批量选号互不影响。</div><div class="multiple-batch-grid"><button class="action" onclick="window.multiBatch(1)">生成 1 组</button><button class="action" onclick="window.multiBatch(5)">生成 5 组</button><button class="action" onclick="window.multiBatch(10)">生成 10 组</button><button class="action" onclick="window.multiBatch(20)">生成 20 组</button><button class="action" onclick="window.multiBatch(50)">生成 50 组</button><button class="action" onclick="window.multiBatch(100)">生成 100 组</button></div><div class="box-title" style="margin-top:10px"><span>本次复式批量结果</span><span id="multipleBatchCount">0 组</span><button class="small-btn" onclick="window.multiBatchCopy()">复制全部</button></div><div id="multipleBatchList"></div>`;
+    bm.appendChild(box);renderMultiBatch();
+  }
+  function hook(){
+    const oldSetMode=window.setMode;
+    window.setMode=function(m){oldSetMode(m);multiInit();initMultiBatch();if(M('multipleMode'))M('multipleMode').classList.add('hidden');if(m!=='multiple'){} };
+    const oldSwitchType=window.switchType;
+    window.switchType=function(t){oldSwitchType(t);setTimeout(()=>{multiInit();initMultiBatch();mRefreshUI();if(M('multipleBatchBox')){const title=M('multipleBatchBox').querySelector('.box-title span');if(title)title.textContent='➕ '+(currentType==='ssq'?'双色球':'大乐透')+' 批量复式';}updateVisibility();},0)};
+  }
+  document.addEventListener('DOMContentLoaded',()=>{multiInit();initMultiBatch();});
+  setTimeout(()=>{multiInit();initMultiBatch();hook()},0);
+})();
+</script>
+
+<script>
+/* ===== 追加修正：复式独立显示 + 复式模块内批量生成 =====
+   仅修正新增复式模块的显示位置与按钮点击，不改原有功能代码。
+*/
+(function(){
+  function fixMultipleUI(){
+    const row=document.querySelector('.mode-row');
+    const multiBtn=document.getElementById('mode-multiple');
+    if(row&&multiBtn&&multiBtn.parentElement!==row){
+      row.appendChild(multiBtn);
+    }
+    const multi=document.getElementById('multipleMode');
+    const batch=document.getElementById('multipleBatchBox');
+    if(multi&&batch){
+      const firstCard=multi.querySelector('.multiple-card');
+      if(firstCard&&batch.parentElement===multi&&batch.previousElementSibling!==firstCard){
+        firstCard.after(batch);
+      }
+    }
+  }
+  function bindMultiple(){
+    fixMultipleUI();
+    const btn=document.getElementById('mode-multiple');
+    if(btn&&!btn.dataset.fixedMultipleClick){
+      btn.dataset.fixedMultipleClick='1';
+      btn.onclick=function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if(window.setMultipleMode)window.setMultipleMode();
+      };
+    }
+  }
+  function keepVisibility(){
+    const multi=document.getElementById('multipleMode');
+    if(!multi)return;
+    if(window.mode!=='multiple')multi.classList.add('hidden');
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    setTimeout(bindMultiple,50);
+    setTimeout(bindMultiple,300);
+    setTimeout(keepVisibility,350);
+  });
+  setTimeout(bindMultiple,100);
+  setTimeout(bindMultiple,600);
+})();
+</script>
+</body></html>
